@@ -34,7 +34,7 @@ namespace DLARS.Controller
 
             if (result <= 0)
             {
-                return BadRequest("Error occured in adding a request");
+                return BadRequest("");
             }
 
             return Ok(result);
