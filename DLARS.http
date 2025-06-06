@@ -1,0 +1,6 @@
+@DLARS_HostAddress = http://localhost:5240
+
+GET {{DLARS_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
