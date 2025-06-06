@@ -34,7 +34,7 @@ namespace DLARS.Controller
 
             if (result <= 0)
             {
-                return BadRequest("Error in submitting a request");
+                return BadRequest("");
             }
 
             return Ok(result);
