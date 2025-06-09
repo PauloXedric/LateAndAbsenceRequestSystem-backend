@@ -43,14 +43,14 @@ namespace DLARS.Controller
 
         // [Authorize(Roles = "Secretary,chairperson,Director")]
         [HttpGet("DisplayRequest")]
-        public async Task<IActionResult> GetRequests([FromQuery] int? statusId, [FromQuery] PaginationParams pagination)
+        public async Task<IActionResult> GetRequests([FromQuery] int? statusId, [FromQuery] PaginationParams pagination, [FromQuery] string? filter)
         {
             if (!statusId.HasValue || statusId.Value <= 0)
             {
                 return BadRequest("A valid statusId must be provided.");
             }
 
-                var requestResult = await _requestService.GetRequestByStatusIdAsync(statusId.Value, pagination);
+                var requestResult = await _requestService.GetRequestByStatusIdAsync(statusId.Value, pagination, filter);
                 return Ok(requestResult);
 
         }

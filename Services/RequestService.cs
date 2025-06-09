@@ -12,7 +12,7 @@ namespace DLARS.Services
     public interface IRequestService 
     {
         Task<int> AddRequestAsync(RequestCreateModel request);
-        Task<PagedResult<RequestReadModel>> GetRequestByStatusIdAsync(int statusId, PaginationParams pagination);
+        Task<PagedResult<RequestReadModel>> GetRequestByStatusIdAsync(int statusId, PaginationParams pagination, string? filter);
         Task<bool> UpdateRequestStatusAsync(RequestUpdateModel requestUpdate);
     }
 
@@ -47,11 +47,11 @@ namespace DLARS.Services
         }
 
 
-        public async Task<PagedResult<RequestReadModel>> GetRequestByStatusIdAsync(int statusId, PaginationParams pagination) 
+        public async Task<PagedResult<RequestReadModel>> GetRequestByStatusIdAsync(int statusId, PaginationParams pagination, string? filter) 
         {
             try
             {
-                var query = _requestRepository.GetRequestByStatusId(statusId);
+                var query = _requestRepository.GetRequestByStatusId(statusId, filter);
 
                 var totalCount = await query.CountAsync();
 

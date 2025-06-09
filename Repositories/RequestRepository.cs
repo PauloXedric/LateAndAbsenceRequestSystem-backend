@@ -10,7 +10,7 @@ namespace DLARS.Repositories
     public interface IRequestRepository 
     {
         Task<int> AddRequestAsync(RequestEntity request);
-        IQueryable<RequestEntity> GetRequestByStatusId(int statusId);
+        IQueryable<RequestEntity> GetRequestByStatusId(int statusId, string? filter);
         Task<bool> UpdateRequestStatusAsync(RequestEntity request);
 
     }
@@ -35,11 +35,17 @@ namespace DLARS.Repositories
         }
         
 
-        public IQueryable<RequestEntity> GetRequestByStatusId(int statusId) 
+        public IQueryable<RequestEntity> GetRequestByStatusId(int statusId, string? filter) 
         {
-            return _dbContext.Request
-                   .Where(r => r.StatusId == statusId)
-                   .OrderBy(r => r.StatusId);
+            var query = _dbContext.Request
+                .Where(r => r.StatusId == statusId);
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                query = query.Where(r => r.StudentNumber.Contains(filter));
+            }
+
+            return query.OrderBy(r => r.StatusId);
         }
 
   
