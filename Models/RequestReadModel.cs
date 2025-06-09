@@ -5,6 +5,9 @@ namespace DLARS.Models
     public class RequestReadModel
     {
         [Required]
+        public int RequestId { get; set; }
+
+        [Required]
         public string StudentNumber { get; set; } = string.Empty;
 
         [Required]
