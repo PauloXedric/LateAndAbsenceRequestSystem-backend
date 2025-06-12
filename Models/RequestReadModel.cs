@@ -17,6 +17,12 @@ namespace DLARS.Models
         public string CourseYearSection { get; set; } = string.Empty;
 
         [Required]
+        public string Teacher { get; set; } = string.Empty;
+
+        [Required]
+        public string SubjectCode { get; set; } = string.Empty;
+
+        [Required]
         public string DateOfAbsence { get; set; } = string.Empty;
 
         [Required]
