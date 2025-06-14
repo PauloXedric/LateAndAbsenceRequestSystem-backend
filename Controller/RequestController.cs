@@ -41,7 +41,7 @@ namespace DLARS.Controller
         }
 
 
-        // [Authorize(Roles = "Secretary,chairperson,Director")]
+        [Authorize(Roles = "Secretary,chairperson,Director")]
         [HttpGet("DisplayRequest")]
         public async Task<IActionResult> GetRequests([FromQuery] int? statusId, [FromQuery] PaginationParams pagination, [FromQuery] string? filter)
         {

@@ -53,7 +53,7 @@ namespace DLARS.Repositories
 
         public async Task<IdentityUser> GetUserAccountAsync(UserLoginModel userLogin) 
         {
-            var identifyUser = await _userManager.FindByEmailAsync(userLogin.Username);
+            var identifyUser = await _userManager.FindByNameAsync(userLogin.Username);
 
             if (identifyUser is null) 
             {

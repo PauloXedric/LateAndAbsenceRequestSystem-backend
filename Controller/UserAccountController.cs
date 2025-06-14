@@ -10,11 +10,13 @@ namespace DLARS.Controller
     {
 
         private readonly IUserAccountService _userAccountService;
+        private readonly ITokenService _tokenService;
 
 
-        public UserAccountController(IUserAccountService userAccountService)
+        public UserAccountController(IUserAccountService userAccountService, ITokenService tokenService)
         {
             _userAccountService = userAccountService;
+            _tokenService = tokenService;
         }
 
 
@@ -44,7 +46,7 @@ namespace DLARS.Controller
                 return Unauthorized(new { message = "Invalid username or password" });
             }
 
-            var tokenString = await _userAccountService.GenerateTokenString(user);
+            var tokenString = await _tokenService.GenerateUserTokenAsync(user);
 
             return Ok(new { tokenString });
         }
