@@ -49,6 +49,7 @@ namespace DLARS.Services
                   new Claim("requestId", request.RequestId.ToString()),
                   new Claim("studentName", request.StudentName),
                   new Claim("studentNumber", request.StudentNumber),
+                  new Claim("teacher", request.Teacher),
                   new Claim("subject", request.SubjectCode),
                   new Claim("dateOfAbsence", request.DateOfAbsence.ToString("yyyy-MM-dd")),
                   new Claim("dateOfAttendance", request.DateOfAttendance.ToString("yyyy-MM-dd")),

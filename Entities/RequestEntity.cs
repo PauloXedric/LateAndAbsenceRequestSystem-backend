@@ -24,5 +24,6 @@ namespace DLARS.Entities
         public string? SecretaryProofApprovalDate { get; set; }
         public string? ChairpersonApprovalDate { get; set; }
         public string? DirectorApprovalDate { get; set; }
+        public string? MedicalCertificate { get; set; }
     }
 }

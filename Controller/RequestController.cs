@@ -50,14 +50,14 @@ namespace DLARS.Controller
                 return BadRequest("A valid statusId must be provided.");
             }
 
-                var requestResult = await _requestService.GetRequestByStatusIdAsync(statusId.Value, pagination, filter);
-                return Ok(requestResult);
+            var requestResult = await _requestService.GetRequestByStatusIdAsync(statusId.Value, pagination, filter);
+            return Ok(requestResult);
 
         }
 
 
         [HttpPut("UpdateStatus")]
-        public async Task<IActionResult> UpdateStatus([FromBody] RequestUpdateModel requestUpdate) 
+        public async Task<IActionResult> UpdateStatus([FromBody] RequestUpdateModel requestUpdate)
         {
             if (!ModelState.IsValid)
             {
@@ -70,6 +70,18 @@ namespace DLARS.Controller
         }
 
 
+        [HttpPut("AddImageProof")]
+        public async Task<IActionResult> AddImageProof([FromBody] AddImageInRequestModel imageRequest) 
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _requestService.AddImageInRequestAsync(imageRequest);
+
+            return Ok(result);
+        }
 
 
 

@@ -14,6 +14,7 @@ namespace DLARS.Services
         Task<int> AddRequestAsync(RequestCreateModel request);
         Task<PagedResult<RequestReadModel>> GetRequestByStatusIdAsync(int statusId, PaginationParams pagination, string? filter);
         Task<bool> UpdateRequestStatusAsync(RequestUpdateModel requestUpdate);
+        Task<bool> AddImageInRequestAsync(AddImageInRequestModel addImageInRequest);
     }
 
 
@@ -82,5 +83,20 @@ namespace DLARS.Services
                 throw new ApplicationException("Error occured in updating request status.", ex);
             }
         }
+
+        public async Task<bool> AddImageInRequestAsync(AddImageInRequestModel addImageInRequest)
+        {
+            try
+            {
+                var requestEntity = _mapper.Map<RequestEntity>(addImageInRequest);
+                return await _requestRepository.AddImageInRequestAsync(requestEntity);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Error in adding supporting documents in request", ex);
+            }
+        }
+
+
     }
 }

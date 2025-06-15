@@ -12,6 +12,7 @@ namespace DLARS.Repositories
         Task<int> AddRequestAsync(RequestEntity request);
         IQueryable<RequestEntity> GetRequestByStatusId(int statusId, string? filter);
         Task<bool> UpdateRequestStatusAsync(RequestEntity request);
+        Task<bool> AddImageInRequestAsync(RequestEntity request);
 
     }
 
@@ -60,6 +61,19 @@ namespace DLARS.Repositories
             return true;
         }
 
+
+        public async Task<bool> AddImageInRequestAsync(RequestEntity request) 
+        {
+            var result = await _dbContext.Request.FindAsync(request.RequestId);
+            if (result == null) return false;
+
+            result.ProofImage = request.ProofImage;
+            result.ParentValidImage = request.ParentValidImage;
+            result.MedicalCertificate = request.MedicalCertificate;
+            await _dbContext.SaveChangesAsync();
+
+            return true;
+        }
 
     }
 }
