@@ -4,6 +4,7 @@ using DLARS.Entities;
 using DLARS.Models;
 using DLARS.Models.Pagination;
 using DLARS.Repositories;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 
 namespace DLARS.Services
@@ -14,41 +15,44 @@ namespace DLARS.Services
         Task<int> AddRequestAsync(RequestCreateModel request);
         Task<PagedResult<RequestReadModel>> GetRequestByStatusIdAsync(int statusId, PaginationParams pagination, string? filter);
         Task<bool> UpdateRequestStatusAsync(RequestUpdateModel requestUpdate);
-        Task<bool> AddImageInRequestAsync(AddImageInRequestModel addImageInRequest);
+        Task<bool> AddImageInRequestAsync(AddImageReceivedInRequestModel addImageInRequest);
     }
 
 
-    public class RequestService : IRequestService   
+    public class RequestService : IRequestService
     {
         private readonly IMapper _mapper;
         private readonly IRequestRepository _requestRepository;
+        private readonly FileStorageService _fileStorageService;
+       
 
-        public RequestService(IMapper mapping, IRequestRepository requestRepository)
+        public RequestService(IMapper mapping, IRequestRepository requestRepository, FileStorageService fileStorageService)
         {
             _mapper = mapping;
             _requestRepository = requestRepository;
+            _fileStorageService = fileStorageService;
         }
 
 
         public async Task<int> AddRequestAsync(RequestCreateModel request)
         {
-            try 
+            try
             {
                 var requestEntity = _mapper.Map<RequestEntity>(request);
 
                 return await _requestRepository.AddRequestAsync(requestEntity);
 
-            } 
-            catch (Exception ex) 
-            { 
-                throw new ApplicationException("Error occured when adding new request.", ex); 
             }
-           
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Error occured when adding new request.", ex);
+            }
+
 
         }
 
 
-        public async Task<PagedResult<RequestReadModel>> GetRequestByStatusIdAsync(int statusId, PaginationParams pagination, string? filter) 
+        public async Task<PagedResult<RequestReadModel>> GetRequestByStatusIdAsync(int statusId, PaginationParams pagination, string? filter)
         {
             try
             {
@@ -71,7 +75,7 @@ namespace DLARS.Services
         }
 
 
-        public async Task<bool> UpdateRequestStatusAsync(RequestUpdateModel requestUpdate) 
+        public async Task<bool> UpdateRequestStatusAsync(RequestUpdateModel requestUpdate)
         {
             try
             {
@@ -84,11 +88,23 @@ namespace DLARS.Services
             }
         }
 
-        public async Task<bool> AddImageInRequestAsync(AddImageInRequestModel addImageInRequest)
+        public async Task<bool> AddImageInRequestAsync(AddImageReceivedInRequestModel imagedReceived)
         {
             try
             {
-                var requestEntity = _mapper.Map<RequestEntity>(addImageInRequest);
+                var proofPath = _fileStorageService.SaveFile(imagedReceived.ProofImage, "imageproof");
+                var parentIdPath = _fileStorageService.SaveFile(imagedReceived.ParentValidImage, "parentvalidid");
+                var medCertPath = _fileStorageService.SaveFile(imagedReceived.MedicalCertificate, "medicalcertificate");
+              
+                var updatedModel = new AddImageUploadInRequestModel
+                {
+                    RequestId = imagedReceived.RequestId,
+                    StatusId = imagedReceived.StatusId,
+                    ProofImage = proofPath,
+                    ParentValidImage = parentIdPath,
+                    MedicalCertificate = medCertPath
+                };
+                var requestEntity = _mapper.Map<RequestEntity>(updatedModel);
                 return await _requestRepository.AddImageInRequestAsync(requestEntity);
             }
             catch (Exception ex)
@@ -97,6 +113,6 @@ namespace DLARS.Services
             }
         }
 
-
+   
     }
 }

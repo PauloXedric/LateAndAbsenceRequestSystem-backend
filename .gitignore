@@ -361,3 +361,13 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+
+wwwroot/imageproof/*
+!wwwroot/imageproof/.gitkeep
+
+wwwroot/parentvalidid/*
+!wwwroot/parentvalidid/.gitkeep
+
+wwwroot/medicalcertificate/*
+!wwwroot/medicalcertificate/.gitkeep

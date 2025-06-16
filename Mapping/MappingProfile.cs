@@ -22,7 +22,7 @@ namespace DLARS.Mappings
 
             CreateMap<TeacherSubjectsIdModel, TeacherSubjectsEntity>();
 
-            CreateMap<AddImageInRequestModel, RequestEntity> ();
+            CreateMap<AddImageUploadInRequestModel, RequestEntity>();
         }
 
 

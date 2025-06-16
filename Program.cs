@@ -116,6 +116,19 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
+app.UseStaticFiles(new StaticFileOptions
+{
+    OnPrepareResponse = ctx =>
+    {
+        var contentType = ctx.Context.Response.ContentType;
+        if (!contentType.StartsWith("image/"))
+        {
+            ctx.Context.Response.StatusCode = 403;
+            ctx.Context.Response.ContentLength = 0;
+            ctx.Context.Response.Body = Stream.Null;
+        }
+    }
+});
 
 app.UseHttpsRedirection();
 

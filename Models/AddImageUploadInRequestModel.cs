@@ -2,10 +2,13 @@
 
 namespace DLARS.Models
 {
-    public class AddImageInRequestModel
+    public class AddImageUploadInRequestModel
     {
         [Required]
         public int RequestId { get; set; }
+
+        [Required]
+        public int StatusId { get; set; }
 
         [Required]
         public string ProofImage { get; set; }
@@ -13,7 +16,6 @@ namespace DLARS.Models
         [Required]
         public string ParentValidImage { get; set; }
 
-        [Required]
-        public string MedicalCertificate { get; set; }
+        public string? MedicalCertificate { get; set; }
     }
 }

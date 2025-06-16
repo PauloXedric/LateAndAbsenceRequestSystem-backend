@@ -67,9 +67,11 @@ namespace DLARS.Repositories
             var result = await _dbContext.Request.FindAsync(request.RequestId);
             if (result == null) return false;
 
+            
             result.ProofImage = request.ProofImage;
             result.ParentValidImage = request.ParentValidImage;
             result.MedicalCertificate = request.MedicalCertificate;
+            result.StatusId = request.StatusId;
             await _dbContext.SaveChangesAsync();
 
             return true;

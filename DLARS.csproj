@@ -28,4 +28,12 @@
 	  <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\imageproof\" />
+    <Folder Include="wwwroot\medicalcertificate\" />
+    <Folder Include="wwwroot\parentvalidid\" />
+  </ItemGroup>
+
+ 
+
 </Project>

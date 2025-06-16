@@ -2,6 +2,7 @@
 using DLARS.Models.Pagination;
 using DLARS.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +17,7 @@ namespace DLARS.Controller
 
         public RequestController(IRequestService requestService)
         {
-            _requestService = requestService;
+            _requestService = requestService;         
         }
 
 
@@ -71,18 +72,13 @@ namespace DLARS.Controller
 
 
         [HttpPut("AddImageProof")]
-        public async Task<IActionResult> AddImageProof([FromBody] AddImageInRequestModel imageRequest) 
+        public async Task<IActionResult> AddImageProof([FromForm] AddImageReceivedInRequestModel imageRequest)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var result = await _requestService.AddImageInRequestAsync(imageRequest);
-
             return Ok(result);
         }
-
 
 
 
