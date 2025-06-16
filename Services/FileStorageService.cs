@@ -2,7 +2,12 @@
 
 namespace DLARS.Services
 {
-    public class FileStorageService
+    public interface IFileStorageService 
+    {
+      string SaveFile(IFormFile file, string folderName);
+    }
+
+    public class FileStorageService : IFileStorageService
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
 

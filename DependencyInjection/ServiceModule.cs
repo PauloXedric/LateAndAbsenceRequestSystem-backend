@@ -16,6 +16,7 @@ namespace DLARS.DependencyInjection
             builder.RegisterType<SubjectService>().As<ISubjectService>().InstancePerLifetimeScope();
             builder.RegisterType<TeacherSubjectsService>().As<ITeacherSubjectsService>().InstancePerLifetimeScope();
             builder.RegisterType<TokenService>().As<ITokenService>().InstancePerLifetimeScope();
+            builder.RegisterType<FileStorageService>().As<IFileStorageService>().InstancePerLifetimeScope();
         }
 
 

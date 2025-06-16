@@ -23,10 +23,10 @@ namespace DLARS.Services
     {
         private readonly IMapper _mapper;
         private readonly IRequestRepository _requestRepository;
-        private readonly FileStorageService _fileStorageService;
+        private readonly IFileStorageService _fileStorageService;
        
 
-        public RequestService(IMapper mapping, IRequestRepository requestRepository, FileStorageService fileStorageService)
+        public RequestService(IMapper mapping, IRequestRepository requestRepository, IFileStorageService fileStorageService)
         {
             _mapper = mapping;
             _requestRepository = requestRepository;
