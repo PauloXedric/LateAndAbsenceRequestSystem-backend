@@ -23,7 +23,7 @@ namespace DLARS.Controller
 
 
         [HttpPost("AddRequest")]
-        public async Task<IActionResult> AddRequest([FromBody] RequestCreateModel request)
+        public async Task<IActionResult> AddNewRequest([FromBody] RequestCreateModel request)
         {
 
             if (!ModelState.IsValid)
@@ -44,7 +44,7 @@ namespace DLARS.Controller
 
         [Authorize(Roles = "Secretary,chairperson,Director")]
         [HttpGet("DisplayRequest")]
-        public async Task<IActionResult> GetRequests([FromQuery] int? statusId, [FromQuery] PaginationParams pagination, [FromQuery] string? filter)
+        public async Task<IActionResult> ReadRequest([FromQuery] int? statusId, [FromQuery] PaginationParams pagination, [FromQuery] string? filter)
         {
             if (!statusId.HasValue || statusId.Value <= 0)
             {
@@ -58,7 +58,7 @@ namespace DLARS.Controller
 
 
         [HttpPut("UpdateStatus")]
-        public async Task<IActionResult> UpdateStatus([FromBody] RequestUpdateModel requestUpdate)
+        public async Task<IActionResult> UpdateRequestStatus([FromBody] RequestUpdateModel requestUpdate)
         {
             if (!ModelState.IsValid)
             {
@@ -72,7 +72,7 @@ namespace DLARS.Controller
 
 
         [HttpPut("AddImageProof")]
-        public async Task<IActionResult> AddImageProof([FromForm] AddImageReceivedInRequestModel imageRequest)
+        public async Task<IActionResult> AddImageProofInRequest([FromForm] AddImageReceivedInRequestModel imageRequest)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
