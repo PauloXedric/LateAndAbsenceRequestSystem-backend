@@ -32,9 +32,9 @@ namespace DLARS.Controller
 
             return result switch
             {
-                AssignSubjectResult.Success => Ok("User registered successfully."),
-                AssignSubjectResult.DoesNotExist => NotFound("User does not exist."),
-                AssignSubjectResult.AlreadyExist => Conflict("User already exists."),
+                AddingSubjectTeacherResult.Success => Ok("User registered successfully."),
+                AddingSubjectTeacherResult.DoesNotExist => NotFound("User does not exist."),
+                AddingSubjectTeacherResult.AlreadyExist => Conflict("User already exists."),
                 _ => StatusCode(500, "Unknown error")
             };
 

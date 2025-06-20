@@ -9,7 +9,7 @@ namespace DLARS.Services
 {
     public interface ITeacherSubjectsService
     {
-        Task<AssignSubjectResult> RegisterSubjectsToTeacher(TeacherSubjectsCodeModel teacherSubjectsCode);
+        Task<AddingSubjectTeacherResult> RegisterSubjectsToTeacher(TeacherSubjectsCodeModel teacherSubjectsCode);
     }
 
 
@@ -31,33 +31,32 @@ namespace DLARS.Services
 
 
 
-        public async Task<AssignSubjectResult> RegisterSubjectsToTeacher(TeacherSubjectsCodeModel teacherSubjectsCode)
+        public async Task<AddingSubjectTeacherResult> RegisterSubjectsToTeacher(TeacherSubjectsCodeModel teacherSubjectsCode)
         {
             try
             {
                 int teacherId = await _teacherRepository.GetTeacherIdAsync(teacherSubjectsCode.TeacherCode);
-                int subjectId = await _subjectRepository.GetSubjectIdAsync(teacherSubjectsCode.SubjectCode);
 
-                if (teacherId <= 0 || subjectId <= 0)
+                if (teacherId <= 0)
                 {
-                    return AssignSubjectResult.DoesNotExist;
+                    return AddingSubjectTeacherResult.DoesNotExist;
                 }
 
-                bool result = await _teacherSubjectsRepository.GetSubjectAndTeacherByIdAsync(teacherId, subjectId);
-
-                if (result == true)
+                foreach (var subjectCode in teacherSubjectsCode.SubjectCode)
                 {
-                    return AssignSubjectResult.AlreadyExist;
-                }
+                    int subjectId = await _subjectRepository.GetSubjectIdAsync(subjectCode);
+                    if (subjectId <= 0) continue;
+                    bool exists = await _teacherSubjectsRepository.GetSubjectAndTeacherByIdAsync(teacherId, subjectId);
+                   
+                    if (exists) continue;
+                    var newModel = CreateNewTeacherSubjectsIdModel(teacherId, subjectId);
 
-                var newModel = CreateNewTeacherSubjectsIdModel(teacherId, subjectId);
+                    var subjectTeacherEntity = _mapper.Map<TeacherSubjectsEntity>(newModel);
 
-                var subjectTeacherEntity = _mapper.Map<TeacherSubjectsEntity>(newModel);
+                    await _teacherSubjectsRepository.AddTeacherandSubjectAsync(subjectTeacherEntity);
 
-                await _teacherSubjectsRepository.AddTeacherandSubjectAsync(subjectTeacherEntity);
-
-                return AssignSubjectResult.Success;
-
+                }              
+                return AddingSubjectTeacherResult.Success;
 
             }
             catch (Exception ex)

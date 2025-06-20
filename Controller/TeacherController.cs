@@ -1,4 +1,5 @@
-﻿using DLARS.Models;
+﻿using DLARS.Enums;
+using DLARS.Models;
 using DLARS.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -21,7 +22,7 @@ namespace DLARS.Controller
 
         
         [HttpPost("AddTeacher")]
-        public async Task<IActionResult> CreateNewTeacher([FromBody] TeacherModel teacher)
+        public async Task<IActionResult> AddNewTeacher([FromBody] TeacherModel teacher)
         {
             if (!ModelState.IsValid)
             {
@@ -30,7 +31,12 @@ namespace DLARS.Controller
 
             var result = await _teacherService.CheckAndAddTeacherAsync(teacher);
 
-            return Ok(result);
+            return result switch
+            {
+                AddingSubjectTeacherResult.Success => Ok(new { message = "Teacher added successfully." }),
+                AddingSubjectTeacherResult.AlreadyExist => Conflict(new { message = "Teacher already exists." }),
+                _ => StatusCode(500, new { message = "Failed to add teacher." })
+            };
 
         }
 

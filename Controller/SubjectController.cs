@@ -1,4 +1,5 @@
-﻿using DLARS.Models;
+﻿using DLARS.Enums;
+using DLARS.Models;
 using DLARS.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -30,8 +31,14 @@ namespace DLARS.Controller
 
             var result = await _subjectService.CheckAndAddSubjectAsync(subject);
 
-            return Ok(result);
-             
+            return result switch
+            {
+
+                AddingSubjectTeacherResult.Success => Ok(new { message = "Subject added successfully." }),
+                AddingSubjectTeacherResult.AlreadyExist => Conflict(new { message = "Subject already exists." }),
+                _ => StatusCode(500, new { message = "Failed to add subject." })
+            };
+
         }
 
 

@@ -17,7 +17,7 @@ namespace DLARS.Controller
 
        
         [HttpPost("GenerateUrlToken")]
-        public async Task<IActionResult> GenerateNewToken([FromBody] RequestReadModel request) 
+        public async Task<IActionResult> GenerateNewToken([FromBody] RequestGenTokenModel request) 
         {
             var token = _tokenService.GenerateUrlToken(request);
             return Ok(new { token });

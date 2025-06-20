@@ -9,7 +9,7 @@ namespace DLARS.Services
 {
     public interface ITokenService 
     {
-        string GenerateUrlToken(RequestReadModel request);
+        string GenerateUrlToken(RequestGenTokenModel request);
         Task<string> GenerateUserTokenAsync(IdentityUser identityUser);
     }
 
@@ -42,7 +42,7 @@ namespace DLARS.Services
         }
 
 
-        public string GenerateUrlToken(RequestReadModel request)
+        public string GenerateUrlToken(RequestGenTokenModel request)
         {
             var claims = new List<Claim>
             {

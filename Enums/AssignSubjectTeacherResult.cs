@@ -1,9 +1,10 @@
 ﻿namespace DLARS.Enums
 {
-    public enum AssignSubjectResult
+    public enum AddingSubjectTeacherResult
     {
         Success,
         AlreadyExist,
-        DoesNotExist
+        DoesNotExist,
+        Failed
     }
 }

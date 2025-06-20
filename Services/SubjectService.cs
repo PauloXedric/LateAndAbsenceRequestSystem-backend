@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DLARS.Entities;
+using DLARS.Enums;
 using DLARS.Models;
 using DLARS.Repositories;
 
@@ -8,7 +9,7 @@ namespace DLARS.Services
 
     public interface ISubjectService
     {
-        Task<bool> CheckAndAddSubjectAsync(SubjectModel subject);
+        Task<AddingSubjectTeacherResult> CheckAndAddSubjectAsync(SubjectModel subject);
     }
 
 
@@ -25,26 +26,28 @@ namespace DLARS.Services
         }
 
 
-        public async Task<bool> CheckAndAddSubjectAsync(SubjectModel subject)
+        public async Task<AddingSubjectTeacherResult> CheckAndAddSubjectAsync(SubjectModel subject)
         {
             try
             {
-                int existingSubject = await _subjectRepository.GetSubjectIdAsync(subject.SubjectCode);
+                int existingTeacher = await _subjectRepository.GetSubjectIdAsync(subject.SubjectCode);
 
 
-                if (existingSubject <= 0)
+                if (existingTeacher > 0)
                 {
-                    return false;
+                    return AddingSubjectTeacherResult.AlreadyExist;
                 }
 
-                var subjectEntity = _mapper.Map<SubjectsEntity>(subject);
+                var teacherEntity = _mapper.Map<SubjectsEntity>(subject);
 
-                return await  _subjectRepository.AddNewSubjectAsync(subjectEntity) > 0;
+                var result = await _subjectRepository.AddNewSubjectAsync(teacherEntity);
+
+                return result > 0 ? AddingSubjectTeacherResult.Success : AddingSubjectTeacherResult.Failed;
 
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Error occured while checking or adding subject.", ex);
+                throw new ApplicationException("Error in Checking Teacher.", ex);
             }
         }
     }

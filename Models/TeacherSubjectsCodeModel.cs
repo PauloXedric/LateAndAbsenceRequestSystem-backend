@@ -9,6 +9,6 @@ namespace DLARS.Models
         public string TeacherCode { get; set; }
 
         [Required]
-        public string SubjectCode { get; set; }
+        public List<string> SubjectCode { get; set; } = new();
     }
 }
