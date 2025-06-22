@@ -1,5 +1,7 @@
-﻿using DLARS.Models;
+﻿using DLARS.Enums;
+using DLARS.Helpers;
 using DLARS.Models.Pagination;
+using DLARS.Models.Requests;
 using DLARS.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -33,18 +35,18 @@ namespace DLARS.Controller
 
             var result = await _requestService.AddRequestAsync(request);
 
-            if (result <= 0)
+            return result switch
             {
-                return BadRequest("Error occured in adding a request");
-            }
-
-            return Ok(result);
+                Result.Success => Ok(ApiResponse.SuccessMessage("Request submit successfully.")),
+                Result.Failed => StatusCode(500, ApiResponse.FailMessage("Failed to submit request.")),
+                _ => StatusCode(500, ApiResponse.FailMessage("Unexpected result."))
+            };
         }
 
 
         [Authorize(Roles = "Secretary,chairperson,Director")]
         [HttpGet("DisplayRequest")]
-        public async Task<IActionResult> ReadRequest([FromQuery] int? statusId, [FromQuery] PaginationParams pagination, [FromQuery] string? filter)
+        public async Task<ActionResult<PagedResult<RequestReadModel>>> ReadRequest([FromQuery] int? statusId, [FromQuery] PaginationParams pagination, [FromQuery] string? filter)
         {
             if (!statusId.HasValue || statusId.Value <= 0)
             {

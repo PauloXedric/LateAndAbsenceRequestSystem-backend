@@ -1,4 +1,5 @@
-﻿using DLARS.Models;
+﻿using DLARS.Helpers;
+using DLARS.Models.UserAccountModels;
 using DLARS.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -43,7 +44,7 @@ namespace DLARS.Controller
 
             if(user == null) 
             {
-                return Unauthorized(new { message = "Invalid username or password" });
+                return Unauthorized(ApiResponse.FailMessage("Incorrect username or password"));
             }
 
             var tokenString = await _tokenService.GenerateUserTokenAsync(user);

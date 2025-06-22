@@ -1,5 +1,6 @@
 ﻿using DLARS.Enums;
-using DLARS.Models;
+using DLARS.Helpers;
+using DLARS.Models.TeacherSubjectModels;
 using DLARS.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -32,9 +33,9 @@ namespace DLARS.Controller
 
             return result switch
             {
-                AddingSubjectTeacherResult.Success => Ok("User registered successfully."),
-                AddingSubjectTeacherResult.DoesNotExist => NotFound("User does not exist."),
-                AddingSubjectTeacherResult.AlreadyExist => Conflict("User already exists."),
+                Result.Success => Ok(ApiResponse.SuccessMessage("Subject assigned successfully.")),
+                Result.DoesNotExist => NotFound(ApiResponse.FailMessage("Instructor/Subject does not exist.")),
+                Result.AlreadyExist => Conflict("Subject Already assigned to the instructor."),
                 _ => StatusCode(500, "Unknown error")
             };
 

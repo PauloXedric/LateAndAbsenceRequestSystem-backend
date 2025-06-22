@@ -1,6 +1,7 @@
 ﻿using DLARS.Data;
 using DLARS.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace DLARS.Repositories
 {
@@ -9,6 +10,7 @@ namespace DLARS.Repositories
     {
         Task<int> AddNewSubjectAsync(SubjectsEntity subject);
         Task<int> GetSubjectIdAsync(string subjectCode);
+        Task<List<SubjectsEntity>> GetAllSubjectAsync();
     }
 
 
@@ -41,6 +43,15 @@ namespace DLARS.Repositories
 
             return subjectId; 
         }
+
+
+        public async Task<List<SubjectsEntity>> GetAllSubjectAsync() 
+        {
+            return await _dbContext.Subject
+                .OrderBy(s => s.SubjectName)
+                .ToListAsync();
+        }
+
 
     }
 }

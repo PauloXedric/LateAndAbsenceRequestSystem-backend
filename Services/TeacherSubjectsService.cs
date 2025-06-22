@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using DLARS.Entities;
 using DLARS.Enums;
-using DLARS.Models;
+using DLARS.Models.TeacherSubjectModels;
 using DLARS.Repositories;
 using System.Reflection.Metadata.Ecma335;
 
@@ -9,7 +9,7 @@ namespace DLARS.Services
 {
     public interface ITeacherSubjectsService
     {
-        Task<AddingSubjectTeacherResult> RegisterSubjectsToTeacher(TeacherSubjectsCodeModel teacherSubjectsCode);
+        Task<Result> RegisterSubjectsToTeacher(TeacherSubjectsCodeModel teacherSubjectsCode);
     }
 
 
@@ -31,7 +31,7 @@ namespace DLARS.Services
 
 
 
-        public async Task<AddingSubjectTeacherResult> RegisterSubjectsToTeacher(TeacherSubjectsCodeModel teacherSubjectsCode)
+        public async Task<Result> RegisterSubjectsToTeacher(TeacherSubjectsCodeModel teacherSubjectsCode)
         {
             try
             {
@@ -39,7 +39,7 @@ namespace DLARS.Services
 
                 if (teacherId <= 0)
                 {
-                    return AddingSubjectTeacherResult.DoesNotExist;
+                    return Result.DoesNotExist;
                 }
 
                 foreach (var subjectCode in teacherSubjectsCode.SubjectCode)
@@ -56,7 +56,7 @@ namespace DLARS.Services
                     await _teacherSubjectsRepository.AddTeacherandSubjectAsync(subjectTeacherEntity);
 
                 }              
-                return AddingSubjectTeacherResult.Success;
+                return Result.Success;
 
             }
             catch (Exception ex)

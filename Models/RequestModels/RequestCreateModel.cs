@@ -1,7 +1,6 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace DLARS.Models
+namespace DLARS.Models.Requests
 {
     public class RequestCreateModel
     {

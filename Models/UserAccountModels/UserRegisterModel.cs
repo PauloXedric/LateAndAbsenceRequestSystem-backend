@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace DLARS.Models
+namespace DLARS.Models.UserAccountModels
 {
     public class UserRegisterModel
     {

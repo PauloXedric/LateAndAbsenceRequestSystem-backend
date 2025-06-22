@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using DLARS.Entities;
-using DLARS.Models;
+using DLARS.Enums;
 using DLARS.Models.Pagination;
+using DLARS.Models.Requests;
 using DLARS.Repositories;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +13,7 @@ namespace DLARS.Services
 
     public interface IRequestService 
     {
-        Task<int> AddRequestAsync(RequestCreateModel request);
+        Task<Result> AddRequestAsync(RequestCreateModel request);
         Task<PagedResult<RequestReadModel>> GetRequestByStatusIdAsync(int statusId, PaginationParams pagination, string? filter);
         Task<bool> UpdateRequestStatusAsync(RequestUpdateModel requestUpdate);
         Task<bool> AddImageInRequestAsync(AddImageReceivedInRequestModel addImageInRequest);
@@ -34,14 +35,15 @@ namespace DLARS.Services
         }
 
 
-        public async Task<int> AddRequestAsync(RequestCreateModel request)
+        public async Task<Result> AddRequestAsync(RequestCreateModel request)
         {
             try
             {
                 var requestEntity = _mapper.Map<RequestEntity>(request);
+                
+                var result = await _requestRepository.AddRequestAsync(requestEntity);
 
-                return await _requestRepository.AddRequestAsync(requestEntity);
-
+                return result > 0 ? Result.Success : Result.Failed;
             }
             catch (Exception ex)
             {

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using DLARS.Entities;
 using DLARS.Enums;
-using DLARS.Models;
+using DLARS.Models.SubjectModel;
 using DLARS.Repositories;
 
 namespace DLARS.Services
@@ -9,7 +9,8 @@ namespace DLARS.Services
 
     public interface ISubjectService
     {
-        Task<AddingSubjectTeacherResult> CheckAndAddSubjectAsync(SubjectModel subject);
+        Task<Result> CheckAndAddSubjectAsync(SubjectCreateModel subject);
+        Task<List<SubjectReadModel>> GetAllSubjectAsync();
     }
 
 
@@ -26,23 +27,23 @@ namespace DLARS.Services
         }
 
 
-        public async Task<AddingSubjectTeacherResult> CheckAndAddSubjectAsync(SubjectModel subject)
+        public async Task<Result> CheckAndAddSubjectAsync(SubjectCreateModel subject)
         {
             try
             {
-                int existingTeacher = await _subjectRepository.GetSubjectIdAsync(subject.SubjectCode);
+                int existingSubject = await _subjectRepository.GetSubjectIdAsync(subject.SubjectCode);
 
 
-                if (existingTeacher > 0)
+                if (existingSubject > 0)
                 {
-                    return AddingSubjectTeacherResult.AlreadyExist;
+                    return Result.AlreadyExist;
                 }
 
                 var teacherEntity = _mapper.Map<SubjectsEntity>(subject);
 
                 var result = await _subjectRepository.AddNewSubjectAsync(teacherEntity);
 
-                return result > 0 ? AddingSubjectTeacherResult.Success : AddingSubjectTeacherResult.Failed;
+                return result > 0 ? Result.Success : Result.Failed;
 
             }
             catch (Exception ex)
@@ -50,5 +51,24 @@ namespace DLARS.Services
                 throw new ApplicationException("Error in Checking Teacher.", ex);
             }
         }
+
+
+        public async Task<List<SubjectReadModel>> GetAllSubjectAsync() 
+        {
+            try
+            {
+                var subjectList = await _subjectRepository.GetAllSubjectAsync();
+
+                var subjectReadModel = _mapper.Map<List<SubjectReadModel>>(subjectList);
+
+                return subjectReadModel;
+            }
+            catch (Exception ex) 
+            {
+                throw new ApplicationException("Error occured in listing all subject's data.");
+            }
+        }
+
+
     }
 }

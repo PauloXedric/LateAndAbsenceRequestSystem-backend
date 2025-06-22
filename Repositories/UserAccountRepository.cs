@@ -1,4 +1,4 @@
-﻿using DLARS.Models;
+﻿using DLARS.Models.UserAccountModels;
 using Microsoft.AspNetCore.Identity;
 using System.Reflection.Metadata.Ecma335;
 using System.Security.Claims;

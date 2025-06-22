@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DLARS.Models
+namespace DLARS.Models.SubjectModel
 {
-    public class SubjectModel
+    public class SubjectCreateModel
     {
         [Required]
         public string SubjectCode { get; set; } = string.Empty;

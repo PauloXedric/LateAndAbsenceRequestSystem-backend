@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DLARS.Models
+namespace DLARS.Models.TeacherModels
 {
-    public class TeacherModel
+    public class TeacherCreateModel
     {
         [Required]
         public string TeacherCode { get; set; } = string.Empty;

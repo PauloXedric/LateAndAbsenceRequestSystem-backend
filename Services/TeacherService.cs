@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using DLARS.Entities;
 using DLARS.Enums;
-using DLARS.Models;
+using DLARS.Models.TeacherModels;
 using DLARS.Repositories;
 
 namespace DLARS.Services
@@ -9,7 +9,8 @@ namespace DLARS.Services
 
     public interface ITeacherService
     {
-        Task<AddingSubjectTeacherResult> CheckAndAddTeacherAsync(TeacherModel teacher);
+        Task<Result> CheckAndAddTeacherAsync(TeacherCreateModel teacher);
+        Task<List<TeacherReadModel>> GetAllTeacherAsync();
     }
 
     public class TeacherService : ITeacherService   
@@ -24,7 +25,7 @@ namespace DLARS.Services
         }
 
 
-        public async Task<AddingSubjectTeacherResult> CheckAndAddTeacherAsync(TeacherModel teacher) 
+        public async Task<Result> CheckAndAddTeacherAsync(TeacherCreateModel teacher) 
         {
             try
             {
@@ -33,14 +34,14 @@ namespace DLARS.Services
 
                 if (existingTeacher > 0) 
                 {
-                    return AddingSubjectTeacherResult.AlreadyExist;
+                    return Result.AlreadyExist;
                 }
 
                 var teacherEntity = _mapper.Map<TeacherEntity>(teacher);
 
                 var result =  await _teacherRepository.AddNewTeacherAsync(teacherEntity);
 
-                return result > 0 ? AddingSubjectTeacherResult.Success : AddingSubjectTeacherResult.Failed;
+                return result > 0 ? Result.Success : Result.Failed;
 
             }
             catch (Exception ex)
@@ -48,5 +49,24 @@ namespace DLARS.Services
                 throw new ApplicationException("Error in Checking Teacher.", ex);
             }
         }
+
+
+        public async Task<List<TeacherReadModel>> GetAllTeacherAsync()
+        {
+            try
+            {
+                var teacherList = await _teacherRepository.GetAllTeacherAsync();
+
+                var teacherReadModel = _mapper.Map<List<TeacherReadModel>>(teacherList);
+
+                return teacherReadModel;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Error occurred in listing all teacher's data", ex);
+            }
+        }
+
+
     }
 }

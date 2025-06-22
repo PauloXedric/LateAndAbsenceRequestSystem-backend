@@ -10,6 +10,7 @@ namespace DLARS.Repositories
     {
         Task<int> AddNewTeacherAsync(TeacherEntity teacher);
         Task<int> GetTeacherIdAsync(string teacherCode);
+        Task<List<TeacherEntity>> GetAllTeacherAsync();
     }
 
 
@@ -44,6 +45,13 @@ namespace DLARS.Repositories
             
         }
 
+
+        public async Task<List<TeacherEntity>> GetAllTeacherAsync() 
+        {
+            return await _dbContext.Teacher
+                .OrderBy(t => t.TeacherName)
+                .ToListAsync();
+        }
 
 
     }

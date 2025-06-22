@@ -1,4 +1,4 @@
-﻿namespace DLARS.Models
+﻿namespace DLARS.Models.Requests
 {
     public class RequestGenTokenModel
     {

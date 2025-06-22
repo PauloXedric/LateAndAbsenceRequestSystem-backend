@@ -1,4 +1,4 @@
-﻿using DLARS.Models;
+﻿using DLARS.Models.UserAccountModels;
 using DLARS.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;

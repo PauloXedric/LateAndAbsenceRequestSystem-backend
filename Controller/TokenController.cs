@@ -1,7 +1,7 @@
 ﻿using DLARS.Services;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
-using DLARS.Models;
+using DLARS.Models.Requests;
 
 namespace DLARS.Controller
 {

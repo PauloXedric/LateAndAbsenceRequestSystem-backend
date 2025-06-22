@@ -1,6 +1,6 @@
 ﻿namespace DLARS.Enums
 {
-    public enum AddingSubjectTeacherResult
+    public enum Result
     {
         Success,
         AlreadyExist,

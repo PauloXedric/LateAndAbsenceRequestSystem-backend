@@ -1,5 +1,6 @@
 ﻿using DLARS.Enums;
-using DLARS.Models;
+using DLARS.Helpers;
+using DLARS.Models.TeacherModels;
 using DLARS.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -22,7 +23,7 @@ namespace DLARS.Controller
 
         
         [HttpPost("AddTeacher")]
-        public async Task<IActionResult> AddNewTeacher([FromBody] TeacherModel teacher)
+        public async Task<IActionResult> AddNewTeacher([FromBody] TeacherCreateModel teacher)
         {
             if (!ModelState.IsValid)
             {
@@ -33,13 +34,21 @@ namespace DLARS.Controller
 
             return result switch
             {
-                AddingSubjectTeacherResult.Success => Ok(new { message = "Teacher added successfully." }),
-                AddingSubjectTeacherResult.AlreadyExist => Conflict(new { message = "Teacher already exists." }),
-                _ => StatusCode(500, new { message = "Failed to add teacher." })
+                Result.Success => Ok(ApiResponse.SuccessMessage("Instructor added successfully.")),
+                Result.AlreadyExist => Conflict(ApiResponse.FailMessage("Instructor already exists.")),
+                _ => StatusCode(500, ApiResponse.FailMessage("Unexpected result."))
             };
 
         }
 
+
+
+        [HttpGet("TeacherList")]
+        public async Task<ActionResult<List<TeacherReadModel>>> TeacherList()
+        {
+            var teacherList = await _teacherService.GetAllTeacherAsync();
+            return Ok(teacherList);
+        }
 
     }
 }

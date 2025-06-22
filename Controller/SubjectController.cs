@@ -1,8 +1,8 @@
-﻿using DLARS.Enums;
-using DLARS.Models;
+﻿
+using DLARS.Enums;
+using DLARS.Helpers;
+using DLARS.Models.SubjectModel;
 using DLARS.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DLARS.Controller
@@ -22,7 +22,7 @@ namespace DLARS.Controller
 
 
         [HttpPost("Addsubject")]
-        public async Task<IActionResult> AddNewSubject([FromBody] SubjectModel subject)
+        public async Task<IActionResult> AddNewSubject([FromBody] SubjectCreateModel subject)
         {
             if (!ModelState.IsValid)
             {
@@ -33,12 +33,19 @@ namespace DLARS.Controller
 
             return result switch
             {
-
-                AddingSubjectTeacherResult.Success => Ok(new { message = "Subject added successfully." }),
-                AddingSubjectTeacherResult.AlreadyExist => Conflict(new { message = "Subject already exists." }),
-                _ => StatusCode(500, new { message = "Failed to add subject." })
+                Result.Success => Ok(ApiResponse.SuccessMessage("Subject added successfully.")),
+                Result.AlreadyExist => Conflict(ApiResponse.FailMessage("Subject already exists.")),
+                _ => StatusCode(500, ApiResponse.FailMessage("Unexpected result."))
             };
 
+        }
+
+
+        [HttpGet("SubjectList")]
+        public async Task<ActionResult<List<SubjectReadModel>>> SubjectList() 
+        {
+            var subjectList = await _subjectService.GetAllSubjectAsync();
+            return Ok(subjectList);
         }
 
 

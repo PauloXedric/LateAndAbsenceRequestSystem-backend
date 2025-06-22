@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DLARS.Models
+namespace DLARS.Models.Requests
 {
     public class AddImageUploadInRequestModel
     {
