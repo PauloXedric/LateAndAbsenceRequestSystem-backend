@@ -11,6 +11,8 @@ namespace DLARS.Services
     {
         Task<Result> CheckAndAddTeacherAsync(TeacherCreateModel teacher);
         Task<List<TeacherReadModel>> GetAllTeacherAsync();
+        Task<Result> CheckAndUpdateTeacherAsync(TeacherUpdateModel updateTeacher);
+        Task<Result> DeleteTeacherAsync(int teacherId);
     }
 
     public class TeacherService : ITeacherService   
@@ -29,7 +31,7 @@ namespace DLARS.Services
         {
             try
             {
-                int existingTeacher = await _teacherRepository.GetTeacherIdAsync(teacher.TeacherCode);
+                int existingTeacher = await _teacherRepository.GetTeacherIdByCodeAsync(teacher.TeacherCode);
 
 
                 if (existingTeacher > 0) 
@@ -67,6 +69,48 @@ namespace DLARS.Services
             }
         }
 
+
+        public async Task<Result> CheckAndUpdateTeacherAsync(TeacherUpdateModel updateTeacher) 
+        {
+            try
+            {
+                var existingTeacher = await _teacherRepository.GetByIdAsync(updateTeacher.TeacherId);
+
+                if (existingTeacher == null)
+                {
+                    return Result.DoesNotExist;
+                }
+
+                existingTeacher.TeacherCode = updateTeacher.TeacherCode;
+                existingTeacher.TeacherName = updateTeacher.TeacherName;
+
+                return Result.Success;
+            }
+            catch (Exception ex) 
+            { 
+                throw new ApplicationException("Error occured in updating teacher.", ex); 
+            }
+        }
+
+
+        public async Task<Result> DeleteTeacherAsync(int teacherId) 
+        {
+            try
+            {
+                var result = await _teacherRepository.DeleteTeacherAsync(teacherId);
+                if (result == false)
+                {
+                    return Result.Failed;
+                }
+                return Result.Success;
+            }
+            catch (Exception ex) 
+            {
+                throw new ApplicationException("Error occured in deleting teacher.", ex);
+            }
+
+
+        }
 
     }
 }

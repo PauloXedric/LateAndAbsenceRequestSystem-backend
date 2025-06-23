@@ -50,5 +50,46 @@ namespace DLARS.Controller
             return Ok(teacherList);
         }
 
+
+        [HttpPut("UpdateTeacher")]
+        public async Task<IActionResult> UpdateTeacher([FromBody] TeacherUpdateModel updateTeacher) 
+        {
+            if (!ModelState.IsValid) 
+            {
+                return BadRequest(ModelState);  
+            }
+
+            var result = await _teacherService.CheckAndUpdateTeacherAsync(updateTeacher);
+
+            return result switch
+            {
+                Result.Success => Ok(ApiResponse.SuccessMessage("Teacher updated successfully.")),
+                Result.DoesNotExist => NotFound(ApiResponse.FailMessage("Teacher does not exists.")),
+                _ => StatusCode(500, ApiResponse.FailMessage("Unexpected result."))
+            };
+            
+        }
+
+
+
+        [HttpDelete("DeleteTeacher")]
+        public async Task<IActionResult> DeleteTeacher([FromQuery] int teacherId)
+        {
+            if (teacherId <= 0)
+            { 
+                return BadRequest("Invalid teacher id"); 
+            }
+
+            var result = await _teacherService.DeleteTeacherAsync(teacherId);
+
+            return result switch
+            {
+                Result.Success => Ok(ApiResponse.SuccessMessage("Teacher has been deleted.")),
+                Result.Failed => StatusCode(500, ApiResponse.FailMessage("Failed to delete teacher due to a system error.")),
+                _ => StatusCode(500, ApiResponse.FailMessage("Unexpected result."))
+            };
+        }
+
+
     }
 }

@@ -35,7 +35,7 @@ namespace DLARS.Services
         {
             try
             {
-                int teacherId = await _teacherRepository.GetTeacherIdAsync(teacherSubjectsCode.TeacherCode);
+                int teacherId = await _teacherRepository.GetTeacherIdByCodeAsync(teacherSubjectsCode.TeacherCode);
 
                 if (teacherId <= 0)
                 {
@@ -44,7 +44,7 @@ namespace DLARS.Services
 
                 foreach (var subjectCode in teacherSubjectsCode.SubjectCode)
                 {
-                    int subjectId = await _subjectRepository.GetSubjectIdAsync(subjectCode);
+                    int subjectId = await _subjectRepository.GetSubjectIdByCodeAsync(subjectCode);
                     if (subjectId <= 0) continue;
                     bool exists = await _teacherSubjectsRepository.GetSubjectAndTeacherByIdAsync(teacherId, subjectId);
                    

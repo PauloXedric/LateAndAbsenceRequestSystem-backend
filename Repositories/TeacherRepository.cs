@@ -2,6 +2,7 @@
 using DLARS.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.Design;
+using System.Threading.Tasks;
 
 namespace DLARS.Repositories
 {
@@ -9,8 +10,11 @@ namespace DLARS.Repositories
     public interface ITeacherRepository
     {
         Task<int> AddNewTeacherAsync(TeacherEntity teacher);
-        Task<int> GetTeacherIdAsync(string teacherCode);
+        Task<int> GetTeacherIdByCodeAsync(string teacherCode);
         Task<List<TeacherEntity>> GetAllTeacherAsync();
+        Task<TeacherEntity?> GetByIdAsync(int id);
+        Task<bool> UpdateTeacherAsync(TeacherEntity teacher);
+        Task<bool> DeleteTeacherAsync(int teacherId);
     }
 
 
@@ -34,7 +38,7 @@ namespace DLARS.Repositories
         }
 
 
-        public async Task<int> GetTeacherIdAsync(string teacherCode)
+        public async Task<int> GetTeacherIdByCodeAsync(string teacherCode)
         {
             var teacherId = await _dbContext.Teacher
                 .Where(t => t.TeacherCode == teacherCode)
@@ -53,6 +57,31 @@ namespace DLARS.Repositories
                 .ToListAsync();
         }
 
+
+        public async Task<TeacherEntity?> GetByIdAsync(int id)
+        {
+            return await _dbContext.Teacher.FindAsync(id);
+        }
+
+
+        public async Task<bool> UpdateTeacherAsync(TeacherEntity teacher)
+        {
+            _dbContext.Teacher.Update(teacher);
+            return await _dbContext.SaveChangesAsync() > 0;
+        }
+
+
+        public async Task<bool> DeleteTeacherAsync(int teacherId)
+        {
+            var existingTeacher = await GetByIdAsync(teacherId);
+            if (existingTeacher == null) 
+            { 
+                return false;
+            }
+
+            _dbContext.Teacher.Remove(existingTeacher);
+            return await _dbContext.SaveChangesAsync() > 0;
+        }
 
     }
 }

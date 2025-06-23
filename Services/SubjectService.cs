@@ -2,7 +2,9 @@
 using DLARS.Entities;
 using DLARS.Enums;
 using DLARS.Models.SubjectModel;
+using DLARS.Models.SubjectModels;
 using DLARS.Repositories;
+using System.Threading.Tasks;
 
 namespace DLARS.Services
 {
@@ -11,6 +13,8 @@ namespace DLARS.Services
     {
         Task<Result> CheckAndAddSubjectAsync(SubjectCreateModel subject);
         Task<List<SubjectReadModel>> GetAllSubjectAsync();
+        Task<Result> CheckAndUpdateSubjectAsync(SubjectUpdateModel updateSubject);
+        Task<Result> DeleteSubjectAsync(int subjectId);
     }
 
 
@@ -31,7 +35,7 @@ namespace DLARS.Services
         {
             try
             {
-                int existingSubject = await _subjectRepository.GetSubjectIdAsync(subject.SubjectCode);
+                int existingSubject = await _subjectRepository.GetSubjectIdByCodeAsync(subject.SubjectCode);
 
 
                 if (existingSubject > 0)
@@ -39,9 +43,9 @@ namespace DLARS.Services
                     return Result.AlreadyExist;
                 }
 
-                var teacherEntity = _mapper.Map<SubjectsEntity>(subject);
+                var subjectEntity = _mapper.Map<SubjectsEntity>(subject);
 
-                var result = await _subjectRepository.AddNewSubjectAsync(teacherEntity);
+                var result = await _subjectRepository.AddNewSubjectAsync(subjectEntity);
 
                 return result > 0 ? Result.Success : Result.Failed;
 
@@ -65,10 +69,52 @@ namespace DLARS.Services
             }
             catch (Exception ex) 
             {
-                throw new ApplicationException("Error occured in listing all subject's data.");
+                throw new ApplicationException("Error occured in listing all subject's data.", ex);
             }
         }
 
+
+        public async Task<Result> CheckAndUpdateSubjectAsync(SubjectUpdateModel updateSubject) 
+        {
+            try
+            {
+                var existingSubject = await _subjectRepository.GetByIdAsync(updateSubject.SubjectId);
+
+                if (existingSubject == null)
+                {
+                    return Result.DoesNotExist;
+                }
+
+                existingSubject.SubjectCode = updateSubject.SubjectCode;
+                existingSubject.SubjectName = updateSubject.SubjectName;
+
+                await _subjectRepository.UpdateSubjectAsync(existingSubject);
+                return Result.Success;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Error occured in updating subject.", ex);
+            }
+        }
+
+
+        public async Task<Result> DeleteSubjectAsync(int subjectId) 
+        {
+            try
+            {
+                var result = await _subjectRepository.DeleteSubjectAsync(subjectId);
+                if (result == false)
+                {
+                    return Result.Failed;
+                }
+
+                return Result.Success;
+            }
+            catch (Exception ex) 
+            {
+                throw new ApplicationException("Error occured in deleting subject", ex);
+            }
+        }
 
     }
 }
