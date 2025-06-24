@@ -84,7 +84,7 @@ namespace DLARS.Controller
 
             return result switch
             {
-                Result.Success => Ok(ApiResponse.SuccessMessage("Teacher has been deleted.")),
+                Result.Success => Ok(ApiResponse.SuccessMessage("Teacher has been deleted successfully.")),
                 Result.Failed => StatusCode(500, ApiResponse.FailMessage("Failed to delete teacher due to a system error.")),
                 _ => StatusCode(500, ApiResponse.FailMessage("Unexpected result."))
             };

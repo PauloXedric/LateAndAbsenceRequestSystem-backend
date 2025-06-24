@@ -84,6 +84,7 @@ namespace DLARS.Services
                 existingTeacher.TeacherCode = updateTeacher.TeacherCode;
                 existingTeacher.TeacherName = updateTeacher.TeacherName;
 
+                await _teacherRepository.UpdateTeacherAsync(existingTeacher);
                 return Result.Success;
             }
             catch (Exception ex) 

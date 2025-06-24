@@ -70,5 +70,23 @@ namespace DLARS.Controller
 
         }
 
+
+        [HttpDelete("DeleteSubject")]
+        public async Task<IActionResult> DeleteSubject([FromQuery] int subjectId)
+        {
+            if (subjectId <= 0)
+            {
+                return BadRequest("Invalid subject id");
+            }
+            var result = await _subjectService.DeleteSubjectAsync(subjectId);
+
+            return result switch
+            {
+                Result.Success => Ok(ApiResponse.SuccessMessage("Subject has been deleted successfully.")),
+                Result.Failed => StatusCode(500, ApiResponse.FailMessage("Failed to delete subject due to a system error.")),
+                _ => StatusCode(500, ApiResponse.FailMessage("Unexpected result."))
+            };
+        }
+
     }
 }
