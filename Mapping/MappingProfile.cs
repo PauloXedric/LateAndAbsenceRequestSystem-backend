@@ -25,7 +25,7 @@ namespace DLARS.Mappings
             CreateMap<SubjectCreateModel, SubjectsEntity>();
             CreateMap<SubjectsEntity, SubjectReadModel>();
 
-            CreateMap<TeacherSubjectsIdModel, TeacherSubjectsEntity>();
+            CreateMap<TeacherSubjectsIdModel, TeacherSubjectEntity>();
 
             CreateMap<AddImageUploadInRequestModel, RequestEntity>();
         }

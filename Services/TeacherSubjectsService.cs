@@ -3,6 +3,7 @@ using DLARS.Entities;
 using DLARS.Enums;
 using DLARS.Models.TeacherSubjectModels;
 using DLARS.Repositories;
+using DLARS.Views;
 using System.Reflection.Metadata.Ecma335;
 
 namespace DLARS.Services
@@ -10,6 +11,7 @@ namespace DLARS.Services
     public interface ITeacherSubjectsService
     {
         Task<Result> RegisterSubjectsToTeacher(TeacherSubjectsCodeModel teacherSubjectsCode);
+        Task<List<TeacherAssignedSubjectsModelView>> GetAllListAsync();
     }
 
 
@@ -19,6 +21,7 @@ namespace DLARS.Services
         private readonly ITeacherSubjectsRepository _teacherSubjectsRepository;
         private readonly ITeacherRepository _teacherRepository;
         private readonly ISubjectRepository _subjectRepository;
+
 
         public TeacherSubjectsService(IMapper mapper, ITeacherSubjectsRepository teacherSubjectsRepository,
                                       ITeacherRepository teacherRepository, ISubjectRepository subjectRepository)
@@ -47,11 +50,14 @@ namespace DLARS.Services
                     int subjectId = await _subjectRepository.GetSubjectIdByCodeAsync(subjectCode);
                     if (subjectId <= 0) continue;
                     bool exists = await _teacherSubjectsRepository.GetSubjectAndTeacherByIdAsync(teacherId, subjectId);
-                   
-                    if (exists) continue;
+
+                    if (exists)
+                    {
+                        return Result.AlreadyExist;
+                    }
                     var newModel = CreateNewTeacherSubjectsIdModel(teacherId, subjectId);
 
-                    var subjectTeacherEntity = _mapper.Map<TeacherSubjectsEntity>(newModel);
+                    var subjectTeacherEntity = _mapper.Map<TeacherSubjectEntity>(newModel);
 
                     await _teacherSubjectsRepository.AddTeacherandSubjectAsync(subjectTeacherEntity);
 
@@ -73,6 +79,13 @@ namespace DLARS.Services
                 TeacherId = teacherId,
                 SubjectId = subjectId
             };
+        }
+
+
+
+        public async Task<List<TeacherAssignedSubjectsModelView>> GetAllListAsync()
+        {
+            return await _teacherSubjectsRepository.GetAllAsync();
         }
 
 

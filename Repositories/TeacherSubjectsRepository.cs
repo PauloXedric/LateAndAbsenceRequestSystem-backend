@@ -1,6 +1,7 @@
 ﻿
 using DLARS.Data;
 using DLARS.Entities;
+using DLARS.Views;
 using Microsoft.EntityFrameworkCore;
 
 namespace DLARS.Repositories
@@ -8,8 +9,9 @@ namespace DLARS.Repositories
 
     public interface ITeacherSubjectsRepository
     {
-        Task AddTeacherandSubjectAsync(TeacherSubjectsEntity teacherSubjects);
+        Task AddTeacherandSubjectAsync(TeacherSubjectEntity teacherSubjects);
         Task<bool> GetSubjectAndTeacherByIdAsync(int teacherId, int subjectId);
+        Task<List<TeacherAssignedSubjectsModelView>> GetAllAsync();
     }
 
 
@@ -23,7 +25,7 @@ namespace DLARS.Repositories
         }
 
 
-        public async Task AddTeacherandSubjectAsync(TeacherSubjectsEntity teacherSubjects) 
+        public async Task AddTeacherandSubjectAsync(TeacherSubjectEntity teacherSubjects) 
         {
             _dbContext.TeacherSubject.Add(teacherSubjects);
             await _dbContext.SaveChangesAsync();
@@ -36,6 +38,12 @@ namespace DLARS.Repositories
                 .AnyAsync(ts => ts.TeacherId == teacherId && ts.SubjectId == subjectId);
         }
 
+
+
+        public async Task<List<TeacherAssignedSubjectsModelView>> GetAllAsync() 
+        {
+            return await _dbContext.TeacherAssignedSubjects.ToListAsync();
+        }
 
     }
 }
