@@ -19,11 +19,13 @@ namespace DLARS.Services
     {
         private readonly IMapper _mapper;
         private readonly ITeacherRepository _teacherRepository;
+        private readonly ITeacherSubjectsRepository _teacherSubjectsRepository;
 
-        public TeacherService(IMapper mapper, ITeacherRepository teacherRepository)
+        public TeacherService(IMapper mapper, ITeacherRepository teacherRepository, ITeacherSubjectsRepository teacherSubjectsRepository)
         {
             _mapper = mapper;   
             _teacherRepository = teacherRepository;
+            _teacherSubjectsRepository = teacherSubjectsRepository;
         }
 
 
@@ -103,6 +105,9 @@ namespace DLARS.Services
                 {
                     return Result.Failed;
                 }
+
+                await _teacherSubjectsRepository.DeleteAllSubjectsByTeacherIdAsync(teacherId);
+
                 return Result.Success;
             }
             catch (Exception ex) 

@@ -5,6 +5,7 @@
         Success,
         AlreadyExist,
         DoesNotExist,
-        Failed
+        Failed,
+        Updated
     }
 }

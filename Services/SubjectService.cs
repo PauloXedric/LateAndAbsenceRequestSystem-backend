@@ -23,11 +23,13 @@ namespace DLARS.Services
 
         private readonly IMapper _mapper;
         private readonly ISubjectRepository _subjectRepository;
+        private readonly ITeacherSubjectsRepository _teacherSubjectsRepository;
 
-        public SubjectService(IMapper mapper, ISubjectRepository subjectRepository)
+        public SubjectService(IMapper mapper, ISubjectRepository subjectRepository, ITeacherSubjectsRepository teacherSubjectsRepository)
         {
             _mapper = mapper;
             _subjectRepository = subjectRepository;
+            _teacherSubjectsRepository = teacherSubjectsRepository;
         }
 
 
@@ -107,6 +109,7 @@ namespace DLARS.Services
                 {
                     return Result.Failed;
                 }
+                await _teacherSubjectsRepository.DeleteAllTeacherBySubjectIdAsync(subjectId);
 
                 return Result.Success;
             }

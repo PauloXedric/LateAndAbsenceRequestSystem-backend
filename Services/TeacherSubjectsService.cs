@@ -12,6 +12,7 @@ namespace DLARS.Services
     {
         Task<Result> RegisterSubjectsToTeacher(TeacherSubjectsCodeModel teacherSubjectsCode);
         Task<List<TeacherAssignedSubjectsModelView>> GetAllListAsync();
+        Task<Result> DeleteTeacherWithSubjectsAssignedAsync(int teacherId);
     }
 
 
@@ -45,24 +46,21 @@ namespace DLARS.Services
                     return Result.DoesNotExist;
                 }
 
+               var deleted = await _teacherSubjectsRepository.DeleteAllSubjectsByTeacherIdAsync(teacherId);
+
+
                 foreach (var subjectCode in teacherSubjectsCode.SubjectCode)
                 {
                     int subjectId = await _subjectRepository.GetSubjectIdByCodeAsync(subjectCode);
                     if (subjectId <= 0) continue;
-                    bool exists = await _teacherSubjectsRepository.GetSubjectAndTeacherByIdAsync(teacherId, subjectId);
 
-                    if (exists)
-                    {
-                        return Result.AlreadyExist;
-                    }
                     var newModel = CreateNewTeacherSubjectsIdModel(teacherId, subjectId);
-
                     var subjectTeacherEntity = _mapper.Map<TeacherSubjectEntity>(newModel);
 
                     await _teacherSubjectsRepository.AddTeacherandSubjectAsync(subjectTeacherEntity);
+                }
 
-                }              
-                return Result.Success;
+                return deleted ? Result.Updated : Result.Success;
 
             }
             catch (Exception ex)
@@ -72,24 +70,44 @@ namespace DLARS.Services
         }
 
 
-        public TeacherSubjectsIdModel  CreateNewTeacherSubjectsIdModel(int teacherId, int subjectId) 
-        {
-            return new TeacherSubjectsIdModel
-            {
-                TeacherId = teacherId,
-                SubjectId = subjectId
-            };
+        public TeacherSubjectsIdModel  CreateNewTeacherSubjectsIdModel(int teacherId, int subjectId)
+        { 
+                return new TeacherSubjectsIdModel
+                {
+                    TeacherId = teacherId,
+                    SubjectId = subjectId
+                };     
         }
 
 
 
         public async Task<List<TeacherAssignedSubjectsModelView>> GetAllListAsync()
         {
-            return await _teacherSubjectsRepository.GetAllAsync();
+            try
+            {
+                return await _teacherSubjectsRepository.GetAllAsync();
+            }
+            catch (Exception ex) { throw new ApplicationException("Error occured while getting a list of teacher with their subjects", ex); }
         }
 
 
 
+        public async Task<Result> DeleteTeacherWithSubjectsAssignedAsync(int teacherId)
+        {
+            try
+            {
+                var result = await _teacherSubjectsRepository.DeleteAllSubjectsByTeacherIdAsync(teacherId);
+
+                if (result == false)
+                {
+                    return Result.Failed;
+                }
+
+                return Result.Success;
+            }
+            catch (Exception ex) { throw new ApplicationException("Error occured while deleting teacher and their subjects.", ex); }
+            
+        }
 
     }
 }

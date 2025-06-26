@@ -12,6 +12,8 @@ namespace DLARS.Repositories
         Task AddTeacherandSubjectAsync(TeacherSubjectEntity teacherSubjects);
         Task<bool> GetSubjectAndTeacherByIdAsync(int teacherId, int subjectId);
         Task<List<TeacherAssignedSubjectsModelView>> GetAllAsync();
+        Task<bool>DeleteAllSubjectsByTeacherIdAsync(int teacherId);
+        Task DeleteAllTeacherBySubjectIdAsync(int subjectId);
     }
 
 
@@ -43,6 +45,21 @@ namespace DLARS.Repositories
         public async Task<List<TeacherAssignedSubjectsModelView>> GetAllAsync() 
         {
             return await _dbContext.TeacherAssignedSubjects.ToListAsync();
+        }
+
+
+        public async Task<bool> DeleteAllSubjectsByTeacherIdAsync(int teacherId)
+        {
+            var existing = _dbContext.TeacherSubject.Where(ts => ts.TeacherId == teacherId);
+            _dbContext.TeacherSubject.RemoveRange(existing);
+            return await _dbContext.SaveChangesAsync() > 0;
+        }
+
+        public async Task DeleteAllTeacherBySubjectIdAsync(int subjectId)
+        {
+            var existing = _dbContext.TeacherSubject.Where(ts => ts.SubjectId == subjectId);
+            _dbContext.TeacherSubject.RemoveRange(existing);
+            await _dbContext.SaveChangesAsync();
         }
 
     }

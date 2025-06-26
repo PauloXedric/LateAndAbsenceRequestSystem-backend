@@ -35,6 +35,7 @@ namespace DLARS.Controller
             return result switch
             {
                 Result.Success => Ok(ApiResponse.SuccessMessage("Subject assigned successfully.")),
+                Result.Updated => Ok(ApiResponse.SuccessMessage("The assigned subjects were updated successfully.")),
                 Result.DoesNotExist => NotFound(ApiResponse.FailMessage("Instructor/Subject does not exist.")),
                 Result.AlreadyExist => Conflict(ApiResponse.FailMessage("Subject Already assigned to the instructor.")),
                 _ => StatusCode(500, "Unknown error")
@@ -48,6 +49,26 @@ namespace DLARS.Controller
             var assignments = await _teacherSubjectsService.GetAllListAsync();
             return Ok(assignments);
         }
+
+
+        [HttpDelete("DeleteTeacherWithSubjects")]
+        public async Task<IActionResult> DeleteTeacherWithSubjects([FromQuery] int teacherId)
+        {
+            if (teacherId <= 0)
+            {
+                return BadRequest("Invalid Teacher Id");
+            }
+
+            var result = await _teacherSubjectsService.DeleteTeacherWithSubjectsAssignedAsync(teacherId);
+
+            return result switch
+            {
+                Result.Success => Ok(ApiResponse.SuccessMessage("Teacher and their subjects were deleted successfully.")),
+                Result.Failed => StatusCode(500, ApiResponse.FailMessage("Failed to delete the teacher and their subjects.")),
+                _ => StatusCode(500, "An unknown error occurred.")
+            };
+        }
+        
 
 
     }
