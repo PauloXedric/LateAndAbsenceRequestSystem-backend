@@ -12,6 +12,16 @@ namespace DLARS.Models.UserAccountModels
         [Required]
         [DefaultValue("User")]
         public string Role { get; set; } = "User";
+
+        [Required]
+        public string UserCode { get; set; } = string.Empty;
+
+        [Required]
+        public string LastName {  get; set; } = string.Empty;
+
+        [Required]
+        public string FirstName { get; set; } = string.Empty;
+
     }
 
 }

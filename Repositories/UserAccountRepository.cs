@@ -1,4 +1,5 @@
-﻿using DLARS.Models.UserAccountModels;
+﻿using DLARS.Models.Identity;
+using DLARS.Models.UserAccountModels;
 using Microsoft.AspNetCore.Identity;
 using System.Reflection.Metadata.Ecma335;
 using System.Security.Claims;
@@ -9,16 +10,16 @@ namespace DLARS.Repositories
     public interface IUserAccountRepository
     {
         Task<IdentityResult> AddUserAsync(UserRegisterModel userLogin);
-        Task<IdentityUser> GetUserAccountAsync(UserLoginModel userLogin);
+        Task<ApplicationUser> GetUserAccountAsync(UserLoginModel userLogin);
     }
 
 
     public class UserAccountRepository : IUserAccountRepository
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _userRole;
 
-        public UserAccountRepository(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> userRole)
+        public UserAccountRepository(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> userRole)
         {
             _userManager = userManager;
             _userRole = userRole;
@@ -27,10 +28,13 @@ namespace DLARS.Repositories
 
         public async Task<IdentityResult> AddUserAsync(UserRegisterModel userAccount)
         {
-            var identityUser = new IdentityUser
+            var identityUser = new ApplicationUser
             {
                 UserName = userAccount.UserName,
-                Email = userAccount.UserName
+                Email = userAccount.UserName,
+                UserCode = userAccount.UserCode,
+                LastName = userAccount.LastName,
+                FirstName = userAccount.FirstName,
             };
 
             var newUser =  await _userManager.CreateAsync(identityUser, userAccount.Password);
@@ -51,7 +55,7 @@ namespace DLARS.Repositories
         }
 
 
-        public async Task<IdentityUser> GetUserAccountAsync(UserLoginModel userLogin) 
+        public async Task<ApplicationUser> GetUserAccountAsync(UserLoginModel userLogin) 
         {
             var identifyUser = await _userManager.FindByNameAsync(userLogin.Username);
 

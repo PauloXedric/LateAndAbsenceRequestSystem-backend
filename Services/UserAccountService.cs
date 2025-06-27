@@ -1,4 +1,5 @@
-﻿using DLARS.Models.UserAccountModels;
+﻿using DLARS.Models.Identity;
+using DLARS.Models.UserAccountModels;
 using DLARS.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -12,7 +13,7 @@ namespace DLARS.Services
     public interface IUserAccountService 
     {
         Task<IdentityResult> RegisterAccountAsync(UserRegisterModel userAccount);
-        Task<IdentityUser> LoginUserAccountAsync(UserLoginModel userLogin);
+        Task<ApplicationUser> LoginUserAccountAsync(UserLoginModel userLogin);
     }
 
 
@@ -21,10 +22,10 @@ namespace DLARS.Services
     {
         private readonly IUserAccountRepository _userAccountRepository;
         private readonly IConfiguration _config;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
 
-        public UserAccountService(IUserAccountRepository userAccountRepository, IConfiguration config, UserManager<IdentityUser> userManager)
+        public UserAccountService(IUserAccountRepository userAccountRepository, IConfiguration config, UserManager<ApplicationUser> userManager)
         {
             _userAccountRepository = userAccountRepository;
             _config = config;
@@ -44,7 +45,7 @@ namespace DLARS.Services
         }
 
 
-        public async Task<IdentityUser> LoginUserAccountAsync(UserLoginModel userLogin)
+        public async Task<ApplicationUser> LoginUserAccountAsync(UserLoginModel userLogin)
         {
             if (userLogin == null)
             {

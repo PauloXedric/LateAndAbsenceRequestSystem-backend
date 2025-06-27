@@ -1,5 +1,6 @@
 ﻿using DLARS.Entities;
 using DLARS.Models;
+using DLARS.Models.Identity;
 using DLARS.Views;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -7,7 +8,7 @@ using System.Reflection.Emit;
 
 namespace DLARS.Data
 {
-    public class AppDbContext : IdentityDbContext
+    public class AppDbContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<RequestEntity> Request { get; set; }
         public DbSet<StatusEntity> Status { get; set; }
