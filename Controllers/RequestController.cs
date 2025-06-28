@@ -44,11 +44,11 @@ namespace DLARS.Controller
         }
 
 
-        [Authorize(Roles = "Secretary,chairperson,Director")]
+        //[Authorize(Roles = "Secretary,chairperson,Director")]
         [HttpGet("DisplayRequest")]
-        public async Task<ActionResult<PagedResult<RequestReadModel>>> ReadRequest([FromQuery] int? statusId, [FromQuery] PaginationParams pagination, [FromQuery] string? filter)
+        public async Task<ActionResult<PagedResult<RequestReadModel>>> ReadRequest([FromQuery] RequestStatus? statusId, [FromQuery] PaginationParams pagination, [FromQuery] string? filter)
         {
-            if (!statusId.HasValue || statusId.Value <= 0)
+            if (!statusId.HasValue)
             {
                 return BadRequest("A valid statusId must be provided.");
             }

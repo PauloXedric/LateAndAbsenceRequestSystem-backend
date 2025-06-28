@@ -1,5 +1,6 @@
 ﻿using DLARS.Data;
 using DLARS.Entities;
+using DLARS.Enums;
 using DLARS.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections;
@@ -10,7 +11,7 @@ namespace DLARS.Repositories
     public interface IRequestRepository 
     {
         Task<int> AddRequestAsync(RequestEntity request);
-        IQueryable<RequestEntity> GetRequestByStatusId(int statusId, string? filter);
+        IQueryable<RequestEntity> GetRequestByStatusId(RequestStatus statusId, string? filter);
         Task<bool> UpdateRequestStatusAsync(RequestEntity request);
         Task<bool> AddImageInRequestAsync(RequestEntity request);
 
@@ -36,7 +37,7 @@ namespace DLARS.Repositories
         }
         
 
-        public IQueryable<RequestEntity> GetRequestByStatusId(int statusId, string? filter) 
+        public IQueryable<RequestEntity> GetRequestByStatusId(RequestStatus statusId, string? filter) 
         {
             var query = _dbContext.Request
                 .Where(r => r.StatusId == statusId);
@@ -55,7 +56,7 @@ namespace DLARS.Repositories
             var result = await _dbContext.Request.FindAsync(request.RequestId);
             if (result == null) return false;
 
-            result.StatusId = request.StatusId;
+            result.SetStatus(request.StatusId);
             await _dbContext.SaveChangesAsync();
 
             return true;
@@ -71,7 +72,7 @@ namespace DLARS.Repositories
             result.ProofImage = request.ProofImage;
             result.ParentValidImage = request.ParentValidImage;
             result.MedicalCertificate = request.MedicalCertificate;
-            result.StatusId = request.StatusId;
+            result.SetStatus(request.StatusId);
             await _dbContext.SaveChangesAsync();
 
             return true;

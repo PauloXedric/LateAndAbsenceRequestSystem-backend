@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DLARS.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace DLARS.Entities
 {
@@ -17,13 +18,23 @@ namespace DLARS.Entities
         public string Reason { get; set; }
         public string? ProofImage { get; set; }
         public string? ParentValidImage { get; set; }
-        public int StatusId { get; set; }
-        public string? CreatedOn { get; set; }
-        public string? ModifiedOn { get; set; }
-        public string? SecretaryInitialApprovalDate { get; set; }
-        public string? SecretaryProofApprovalDate { get; set; }
-        public string? ChairpersonApprovalDate { get; set; }
-        public string? DirectorApprovalDate { get; set; }
-        public string? MedicalCertificate { get; set; }
-    }
+        public RequestStatus StatusId { get; private set; }
+        public DateTime? CreatedOn { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public DateTime? SecretaryInitialApprovalDate { get; set; }
+        public DateTime? SecretaryProofApprovalDate { get; set; }
+        public DateTime? ChairpersonApprovalDate { get; set; }
+        public DateTime? DirectorApprovalDate { get; set; }
+        public DateTime? MedicalCertificate { get; set; }
+     
+        public RequestEntity()
+        {
+            StatusId = RequestStatus.WaitingForFirstSecretaryApproval;
+        }
+
+        public void SetStatus(RequestStatus newStatus)
+        {
+            StatusId = newStatus;
+        }
+    } 
 }

@@ -2,7 +2,7 @@
 
 namespace DLARS.Entities
 {
-    public class SubjectsEntity
+    public class SubjectEntity
     {
         [Key]
         public int SubjectId { get; set; }

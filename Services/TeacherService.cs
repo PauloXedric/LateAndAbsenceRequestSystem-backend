@@ -20,12 +20,15 @@ namespace DLARS.Services
         private readonly IMapper _mapper;
         private readonly ITeacherRepository _teacherRepository;
         private readonly ITeacherSubjectsRepository _teacherSubjectsRepository;
+        private readonly ILogger<TeacherService> _logger;
 
-        public TeacherService(IMapper mapper, ITeacherRepository teacherRepository, ITeacherSubjectsRepository teacherSubjectsRepository)
+        public TeacherService(IMapper mapper, ITeacherRepository teacherRepository, 
+                               ITeacherSubjectsRepository teacherSubjectsRepository, ILogger<TeacherService> logger)
         {
             _mapper = mapper;   
             _teacherRepository = teacherRepository;
             _teacherSubjectsRepository = teacherSubjectsRepository;
+            _logger = logger;
         }
 
 
@@ -38,19 +41,21 @@ namespace DLARS.Services
 
                 if (existingTeacher > 0) 
                 {
+                    _logger.LogWarning("Duplicate teacher code: {TeacherCode}", teacher.TeacherCode);
                     return Result.AlreadyExist;
                 }
 
                 var teacherEntity = _mapper.Map<TeacherEntity>(teacher);
 
-                var result =  await _teacherRepository.AddNewTeacherAsync(teacherEntity);
+                var result =  await _teacherRepository.AddAsync(teacherEntity);
 
                 return result > 0 ? Result.Success : Result.Failed;
 
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Error in Checking Teacher.", ex);
+                _logger.LogError(ex, "Failed to add teacher with code {TeacherCode}", teacher.TeacherCode);
+                throw;
             }
         }
 
@@ -58,7 +63,8 @@ namespace DLARS.Services
         public async Task<List<TeacherReadModel>> GetAllTeacherAsync()
         {
             try
-            {
+            {         
+
                 var teacherList = await _teacherRepository.GetAllTeacherAsync();
 
                 var teacherReadModel = _mapper.Map<List<TeacherReadModel>>(teacherList);
@@ -67,7 +73,8 @@ namespace DLARS.Services
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Error occurred in listing all teacher's data", ex);
+                _logger.LogError(ex, "Error occurred while retrieving all teachers.");
+                throw;
             }
         }
 
@@ -86,12 +93,13 @@ namespace DLARS.Services
                 existingTeacher.TeacherCode = updateTeacher.TeacherCode;
                 existingTeacher.TeacherName = updateTeacher.TeacherName;
 
-                await _teacherRepository.UpdateTeacherAsync(existingTeacher);
+                await _teacherRepository.UpdateAsync(existingTeacher);
                 return Result.Success;
             }
             catch (Exception ex) 
-            { 
-                throw new ApplicationException("Error occured in updating teacher.", ex); 
+            {
+                _logger.LogError(ex, "Error occurred while updating teacher with ID {TeacherId}", updateTeacher.TeacherId);
+                throw;
             }
         }
 
@@ -100,7 +108,8 @@ namespace DLARS.Services
         {
             try
             {
-                var result = await _teacherRepository.DeleteTeacherAsync(teacherId);
+       
+                var result = await _teacherRepository.DeleteAsync(teacherId);
                 if (result == false)
                 {
                     return Result.Failed;
@@ -112,7 +121,8 @@ namespace DLARS.Services
             }
             catch (Exception ex) 
             {
-                throw new ApplicationException("Error occured in deleting teacher.", ex);
+                _logger.LogError(ex, "Error occurred while deleting teacher with ID {TeacherId}", teacherId);
+                throw;
             }
 
 

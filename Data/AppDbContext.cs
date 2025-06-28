@@ -13,7 +13,7 @@ namespace DLARS.Data
         public DbSet<RequestEntity> Request { get; set; }
         public DbSet<StatusEntity> Status { get; set; }
         public DbSet<TeacherEntity> Teacher { get; set; }
-        public DbSet<SubjectsEntity> Subject { get; set; }
+        public DbSet<SubjectEntity> Subject { get; set; }
         public DbSet<TeacherSubjectEntity> TeacherSubject { get; set; }
 
 

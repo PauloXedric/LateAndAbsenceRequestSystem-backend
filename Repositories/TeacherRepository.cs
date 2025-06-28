@@ -7,34 +7,21 @@ using System.Threading.Tasks;
 namespace DLARS.Repositories
 {
 
-    public interface ITeacherRepository
+    public interface ITeacherRepository : IBaseRepository<TeacherEntity>
     {
-        Task<int> AddNewTeacherAsync(TeacherEntity teacher);
         Task<int> GetTeacherIdByCodeAsync(string teacherCode);
-        Task<List<TeacherEntity>> GetAllTeacherAsync();
-        Task<TeacherEntity?> GetByIdAsync(int id);
-        Task<bool> UpdateTeacherAsync(TeacherEntity teacher);
-        Task<bool> DeleteTeacherAsync(int teacherId);
+        Task<List<TeacherEntity>> GetAllTeacherAsync(); 
     }
 
 
 
-    public class TeacherRepository : ITeacherRepository
+    public class TeacherRepository : BaseRepository<TeacherEntity> , ITeacherRepository
     {
         private readonly AppDbContext _dbContext;
 
-        public TeacherRepository(AppDbContext dbContext) 
+        public TeacherRepository(AppDbContext dbContext) : base(dbContext)
         {
             _dbContext = dbContext;
-        }
-
-
-        public async Task<int> AddNewTeacherAsync(TeacherEntity teacher)
-        {
-
-                _dbContext.Teacher.Add(teacher);
-                await _dbContext.SaveChangesAsync();
-                return teacher.TeacherId;
         }
 
 
@@ -45,8 +32,7 @@ namespace DLARS.Repositories
                 .Select(t => t.TeacherId)
                 .FirstOrDefaultAsync();
 
-            return teacherId;
-            
+            return teacherId;       
         }
 
 
@@ -57,31 +43,6 @@ namespace DLARS.Repositories
                 .ToListAsync();
         }
 
-
-        public async Task<TeacherEntity?> GetByIdAsync(int id)
-        {
-            return await _dbContext.Teacher.FindAsync(id);
-        }
-
-
-        public async Task<bool> UpdateTeacherAsync(TeacherEntity teacher)
-        {
-            _dbContext.Teacher.Update(teacher);
-            return await _dbContext.SaveChangesAsync() > 0;
-        }
-
-
-        public async Task<bool> DeleteTeacherAsync(int teacherId)
-        {
-            var existingTeacher = await GetByIdAsync(teacherId);
-            if (existingTeacher == null) 
-            { 
-                return false;
-            }
-
-            _dbContext.Teacher.Remove(existingTeacher);
-            return await _dbContext.SaveChangesAsync() > 0;
-        }
 
     }
 }

@@ -13,9 +13,8 @@ namespace DLARS.Mappings
         public MappingProfile()
         {
             CreateMap<RequestEntity, RequestCreateModel>();
-            CreateMap<RequestCreateModel, RequestEntity>()
-                .ForMember(dest => dest.StatusId, opt => opt.MapFrom(src => 1));
-
+            CreateMap<RequestCreateModel, RequestEntity>();
+             
             CreateMap<RequestEntity, RequestReadModel>();
             CreateMap<RequestUpdateModel, RequestEntity>();
 

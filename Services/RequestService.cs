@@ -14,7 +14,7 @@ namespace DLARS.Services
     public interface IRequestService 
     {
         Task<Result> AddRequestAsync(RequestCreateModel request);
-        Task<PagedResult<RequestReadModel>> GetRequestByStatusIdAsync(int statusId, PaginationParams pagination, string? filter);
+        Task<PagedResult<RequestReadModel>> GetRequestByStatusIdAsync(RequestStatus statusId, PaginationParams pagination, string? filter);
         Task<bool> UpdateRequestStatusAsync(RequestUpdateModel requestUpdate);
         Task<bool> AddImageInRequestAsync(AddImageReceivedInRequestModel addImageInRequest);
     }
@@ -54,7 +54,7 @@ namespace DLARS.Services
         }
 
 
-        public async Task<PagedResult<RequestReadModel>> GetRequestByStatusIdAsync(int statusId, PaginationParams pagination, string? filter)
+        public async Task<PagedResult<RequestReadModel>> GetRequestByStatusIdAsync(RequestStatus statusId, PaginationParams pagination, string? filter)
         {
             try
             {

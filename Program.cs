@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using DLARS.Middlewares;
 using OpenApiSecurityScheme = Microsoft.OpenApi.Models.OpenApiSecurityScheme;
 
 
@@ -133,6 +134,7 @@ app.UseStaticFiles(new StaticFileOptions
 
 app.UseHttpsRedirection();
 
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseRouting();
 
 app.UseCors("AllowAngularApp");

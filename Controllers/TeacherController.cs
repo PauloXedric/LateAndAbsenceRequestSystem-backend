@@ -22,7 +22,7 @@ namespace DLARS.Controller
         }
 
         
-        [HttpPost("AddTeacher")]
+        [HttpPost]
         public async Task<IActionResult> AddNewTeacher([FromBody] TeacherCreateModel teacher)
         {
             if (!ModelState.IsValid)
@@ -43,15 +43,15 @@ namespace DLARS.Controller
 
 
 
-        [HttpGet("TeacherList")]
-        public async Task<ActionResult<List<TeacherReadModel>>> TeacherList()
+        [HttpGet]
+        public async Task<ActionResult<List<TeacherReadModel>>> GetAllTeachers()
         {
             var teacherList = await _teacherService.GetAllTeacherAsync();
             return Ok(teacherList);
         }
 
 
-        [HttpPut("UpdateTeacher")]
+        [HttpPut]
         public async Task<IActionResult> UpdateTeacher([FromBody] TeacherUpdateModel updateTeacher) 
         {
             if (!ModelState.IsValid) 
@@ -72,8 +72,8 @@ namespace DLARS.Controller
 
 
 
-        [HttpDelete("DeleteTeacher")]
-        public async Task<IActionResult> DeleteTeacher([FromQuery] int teacherId)
+        [HttpDelete("{teacherId}")]
+        public async Task<IActionResult> DeleteTeacher([FromRoute] int teacherId)
         {
             if (teacherId <= 0)
             { 
