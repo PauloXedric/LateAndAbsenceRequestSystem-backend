@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
+using DLARS.Controller;
 using DLARS.Entities;
 using DLARS.Enums;
 using DLARS.Models.TeacherSubjectModels;
 using DLARS.Repositories;
 using DLARS.Views;
-using System.Reflection.Metadata.Ecma335;
 
 namespace DLARS.Services
 {
@@ -22,15 +22,18 @@ namespace DLARS.Services
         private readonly ITeacherSubjectsRepository _teacherSubjectsRepository;
         private readonly ITeacherRepository _teacherRepository;
         private readonly ISubjectRepository _subjectRepository;
+        private readonly ILogger<TeacherSubjectsService> _logger;
 
 
         public TeacherSubjectsService(IMapper mapper, ITeacherSubjectsRepository teacherSubjectsRepository,
-                                      ITeacherRepository teacherRepository, ISubjectRepository subjectRepository)
+                                      ITeacherRepository teacherRepository, ISubjectRepository subjectRepository, 
+                                      ILogger<TeacherSubjectsService> logger)
         {
             _mapper = mapper;
             _teacherSubjectsRepository = teacherSubjectsRepository;
             _teacherRepository = teacherRepository;
             _subjectRepository = subjectRepository;
+            _logger = logger;
         }
 
 
@@ -57,7 +60,7 @@ namespace DLARS.Services
                     var newModel = CreateNewTeacherSubjectsIdModel(teacherId, subjectId);
                     var subjectTeacherEntity = _mapper.Map<TeacherSubjectEntity>(newModel);
 
-                    await _teacherSubjectsRepository.AddTeacherandSubjectAsync(subjectTeacherEntity);
+                    await _teacherSubjectsRepository.AddAsync(subjectTeacherEntity);
                 }
 
                 return deleted ? Result.Updated : Result.Success;
@@ -65,7 +68,10 @@ namespace DLARS.Services
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Error occured in registering subjects to teacher.", ex);
+                _logger.LogError(ex, "Error occured while registering subject with Code {SubjectCode} to teacher with Code {TeacherCode}", 
+                    teacherSubjectsCode.SubjectCode, 
+                    teacherSubjectsCode.TeacherCode);
+                throw;
             }
         }
 
@@ -85,9 +91,13 @@ namespace DLARS.Services
         {
             try
             {
-                return await _teacherSubjectsRepository.GetAllAsync();
+                return await _teacherSubjectsRepository.GetViewAsync();
             }
-            catch (Exception ex) { throw new ApplicationException("Error occured while getting a list of teacher with their subjects", ex); }
+            catch (Exception ex) 
+            {
+                _logger.LogError(ex, "Error occured while getting a list of teacher with their subjects");
+                throw;
+            }
         }
 
 
@@ -105,8 +115,11 @@ namespace DLARS.Services
 
                 return Result.Success;
             }
-            catch (Exception ex) { throw new ApplicationException("Error occured while deleting teacher and their subjects.", ex); }
-            
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occured while deleting teacher with ID {TeacherId} with its subjects", teacherId);
+                throw;
+            }
         }
 
     }

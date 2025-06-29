@@ -22,8 +22,8 @@ namespace DLARS.Controller
 
 
 
-        [HttpPost("AssignSubject")]
-        public async Task<IActionResult> AssignSubjectToTeacher([FromBody] TeacherSubjectsCodeModel teacherSubjects)
+        [HttpPost]
+        public async Task<IActionResult> AssignSubjectsToTeacher([FromBody] TeacherSubjectsCodeModel teacherSubjects)
         {
             if (!ModelState.IsValid)
             {
@@ -43,16 +43,16 @@ namespace DLARS.Controller
 
         }
 
-        [HttpGet("TeacherAssignedSubjects")]
-        public async Task<ActionResult<List<TeacherAssignedSubjectsModelView>>> TeacherAssignedSubjectsList()
+        [HttpGet]
+        public async Task<ActionResult<List<TeacherAssignedSubjectsModelView>>> GetAllTeacherAssignedSubjects()
         {
-            var assignments = await _teacherSubjectsService.GetAllListAsync();
-            return Ok(assignments);
+            var assignedList = await _teacherSubjectsService.GetAllListAsync();
+            return Ok(assignedList);
         }
 
 
-        [HttpDelete("DeleteTeacherWithSubjects")]
-        public async Task<IActionResult> DeleteTeacherWithSubjects([FromQuery] int teacherId)
+        [HttpDelete("{teacherId}")]
+        public async Task<IActionResult> DeleteTeacherWithSubjects([FromRoute] int teacherId)
         {
             if (teacherId <= 0)
             {

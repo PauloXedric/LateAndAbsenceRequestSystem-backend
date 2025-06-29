@@ -17,36 +17,39 @@ namespace DLARS.Repositories
         private readonly AppDbContext _dbContext;
         private readonly DbSet<T> _dbSet;
 
+
         public BaseRepository(AppDbContext dbContext) 
         {
             _dbContext = dbContext;
             _dbSet = dbContext.Set<T>();
         }
 
+
         public async Task<T?> GetByIdAsync(int id)
         {
             return await _dbSet.FindAsync(id);
         }
+
 
         public async Task<List<T>> GetAllAsync()
         {
             return await _dbSet.ToListAsync();
         }
 
+
         public async Task<int> AddAsync(T entity)
         {
             await _dbSet.AddAsync(entity);
-            await _dbContext.SaveChangesAsync();
-
-            var prop = typeof(T).GetProperty("Id") ?? typeof(T).GetProperty($"{typeof(T).Name}Id");
-            return (int)(prop?.GetValue(entity) ?? 0);
+            return await _dbContext.SaveChangesAsync();
         }
+
 
         public async Task<bool> UpdateAsync(T entity)
         {
             _dbSet.Update(entity);
             return await _dbContext.SaveChangesAsync() > 0;
         }
+
 
         public async Task<bool> DeleteAsync(int id)
         {

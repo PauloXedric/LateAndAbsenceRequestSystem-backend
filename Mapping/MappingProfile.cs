@@ -4,6 +4,7 @@ using DLARS.Models.Requests;
 using DLARS.Models.SubjectModel;
 using DLARS.Models.TeacherModels;
 using DLARS.Models.TeacherSubjectModels;
+using DLARS.Views;
 
 namespace DLARS.Mappings
 {
@@ -21,12 +22,15 @@ namespace DLARS.Mappings
             CreateMap<TeacherCreateModel, TeacherEntity>();
             CreateMap<TeacherEntity, TeacherReadModel>();
 
-            CreateMap<SubjectCreateModel, SubjectsEntity>();
-            CreateMap<SubjectsEntity, SubjectReadModel>();
+            CreateMap<SubjectCreateModel, SubjectEntity>();
+            CreateMap<SubjectEntity, SubjectReadModel>();
 
             CreateMap<TeacherSubjectsIdModel, TeacherSubjectEntity>();
 
             CreateMap<AddImageUploadInRequestModel, RequestEntity>();
+
+
+            CreateMap<TeacherSubjectEntity, TeacherAssignedSubjectsModelView>();
         }
 
 

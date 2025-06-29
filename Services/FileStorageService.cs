@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿
 
 namespace DLARS.Services
 {
@@ -10,26 +10,40 @@ namespace DLARS.Services
     public class FileStorageService : IFileStorageService
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly ILogger<FileStorageService> _logger;
 
-        public FileStorageService(IWebHostEnvironment webHostEnvironment)
+        public FileStorageService(IWebHostEnvironment webHostEnvironment, ILogger<FileStorageService> logger)
         {
             _webHostEnvironment = webHostEnvironment;
+            _logger = logger;
         }
 
         public string SaveFile(IFormFile file, string folderName)
         {
-            if (file == null || file.Length == 0) return null;
+            try
+            {
+                if (file == null || file.Length == 0)
+                {
+                    _logger.LogWarning("Empty or null file provided.");
+                    return string.Empty;
+                }
 
-            var folderPath = Path.Combine(_webHostEnvironment.WebRootPath, folderName);
-            if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
+                var folderPath = Path.Combine(_webHostEnvironment.WebRootPath, folderName);
+                if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
 
-            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
-            var filePath = Path.Combine(folderPath, fileName);
+                var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+                var filePath = Path.Combine(folderPath, fileName);
 
-            using var stream = new FileStream(filePath, FileMode.Create);
-            file.CopyTo(stream);
+                using var stream = new FileStream(filePath, FileMode.Create);
+                file.CopyTo(stream);
 
-            return $"/{folderName}/{fileName}";
+                return $"/{folderName}/{fileName}";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occured while saving a file to folder {}", folderName);
+                throw;
+            }
         }
 
     }

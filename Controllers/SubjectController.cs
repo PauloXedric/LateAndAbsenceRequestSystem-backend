@@ -22,7 +22,7 @@ namespace DLARS.Controller
         }
 
 
-        [HttpPost("Addsubject")]
+        [HttpPost]
         public async Task<IActionResult> AddNewSubject([FromBody] SubjectCreateModel subject)
         {
             if (!ModelState.IsValid)
@@ -42,8 +42,8 @@ namespace DLARS.Controller
         }
 
 
-        [HttpGet("SubjectList")]
-        public async Task<ActionResult<List<SubjectReadModel>>> SubjectList()
+        [HttpGet]
+        public async Task<ActionResult<List<SubjectReadModel>>> GetAllSubjects()
         {
             var subjectList = await _subjectService.GetAllSubjectAsync();
             return Ok(subjectList);
@@ -51,7 +51,7 @@ namespace DLARS.Controller
 
 
 
-        [HttpPut("UpdateSubject")]
+        [HttpPut]
         public async Task<IActionResult> UpdateSubject([FromBody] SubjectUpdateModel updatemodel) 
         {
             if (!ModelState.IsValid) 
@@ -71,8 +71,8 @@ namespace DLARS.Controller
         }
 
 
-        [HttpDelete("DeleteSubject")]
-        public async Task<IActionResult> DeleteSubject([FromQuery] int subjectId)
+        [HttpDelete("{subjectId}")]
+        public async Task<IActionResult> DeleteSubject([FromRoute] int subjectId)
         {
             if (subjectId <= 0)
             {

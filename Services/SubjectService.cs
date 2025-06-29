@@ -24,12 +24,15 @@ namespace DLARS.Services
         private readonly IMapper _mapper;
         private readonly ISubjectRepository _subjectRepository;
         private readonly ITeacherSubjectsRepository _teacherSubjectsRepository;
+        private readonly ILogger<TeacherService> _logger;
 
-        public SubjectService(IMapper mapper, ISubjectRepository subjectRepository, ITeacherSubjectsRepository teacherSubjectsRepository)
+        public SubjectService(IMapper mapper, ISubjectRepository subjectRepository, 
+                              ITeacherSubjectsRepository teacherSubjectsRepository, ILogger<TeacherService> logger)
         {
             _mapper = mapper;
             _subjectRepository = subjectRepository;
             _teacherSubjectsRepository = teacherSubjectsRepository;
+            _logger = logger;
         }
 
 
@@ -42,19 +45,21 @@ namespace DLARS.Services
 
                 if (existingSubject > 0)
                 {
+                    _logger.LogWarning("Duplicate subject Code: {SubjectCode}", subject.SubjectCode);
                     return Result.AlreadyExist;
                 }
 
-                var subjectEntity = _mapper.Map<SubjectsEntity>(subject);
+                var subjectEntity = _mapper.Map<SubjectEntity>(subject);
 
-                var result = await _subjectRepository.AddNewSubjectAsync(subjectEntity);
+                var result = await _subjectRepository.AddAsync(subjectEntity);
 
                 return result > 0 ? Result.Success : Result.Failed;
 
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Error in Checking Teacher.", ex);
+                _logger.LogError(ex, "Failed to add subject with Code {SubjectCode}", subject.SubjectCode);
+                throw;
             }
         }
 
@@ -71,7 +76,8 @@ namespace DLARS.Services
             }
             catch (Exception ex) 
             {
-                throw new ApplicationException("Error occured in listing all subject's data.", ex);
+                _logger.LogError(ex, "Error occured while retrieving all subject data.");
+                throw;
             }
         }
 
@@ -90,12 +96,13 @@ namespace DLARS.Services
                 existingSubject.SubjectCode = updateSubject.SubjectCode;
                 existingSubject.SubjectName = updateSubject.SubjectName;
 
-                await _subjectRepository.UpdateSubjectAsync(existingSubject);
+                await _subjectRepository.UpdateAsync(existingSubject);
                 return Result.Success;
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Error occured in updating subject.", ex);
+                _logger.LogError(ex, "Error occured while updating subject with Code {SubjectCode}", updateSubject.SubjectCode);
+                throw;
             }
         }
 
@@ -104,7 +111,7 @@ namespace DLARS.Services
         {
             try
             {
-                var result = await _subjectRepository.DeleteSubjectAsync(subjectId);
+                var result = await _subjectRepository.DeleteAsync(subjectId);
                 if (result == false)
                 {
                     return Result.Failed;
@@ -115,7 +122,8 @@ namespace DLARS.Services
             }
             catch (Exception ex) 
             {
-                throw new ApplicationException("Error occured in deleting subject", ex);
+                _logger.LogError(ex, "Error occured while deleting subject with ID {SubjectId}", subjectId);
+                throw;
             }
         }
 

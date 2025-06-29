@@ -5,7 +5,6 @@ using DLARS.Enums;
 using DLARS.Models.Pagination;
 using DLARS.Models.Requests;
 using DLARS.Repositories;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 
 namespace DLARS.Services
@@ -25,13 +24,16 @@ namespace DLARS.Services
         private readonly IMapper _mapper;
         private readonly IRequestRepository _requestRepository;
         private readonly IFileStorageService _fileStorageService;
+        private readonly ILogger<RequestService> _logger;
        
 
-        public RequestService(IMapper mapping, IRequestRepository requestRepository, IFileStorageService fileStorageService)
+        public RequestService(IMapper mapping, IRequestRepository requestRepository, 
+                              IFileStorageService fileStorageService, ILogger<RequestService> logger)
         {
             _mapper = mapping;
             _requestRepository = requestRepository;
             _fileStorageService = fileStorageService;
+            _logger = logger;
         }
 
 
@@ -41,16 +43,15 @@ namespace DLARS.Services
             {
                 var requestEntity = _mapper.Map<RequestEntity>(request);
                 
-                var result = await _requestRepository.AddRequestAsync(requestEntity);
+                var result = await _requestRepository.AddAsync(requestEntity);
 
                 return result > 0 ? Result.Success : Result.Failed;
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Error occured when adding new request.", ex);
+                _logger.LogError(ex, "Error occured while adding new request");
+                throw;
             }
-
-
         }
 
 
@@ -72,7 +73,8 @@ namespace DLARS.Services
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Error occured in displaying request data.", ex);
+                _logger.LogError(ex, "Error occured while displaying request data");
+                throw;
             }
         }
 
@@ -86,7 +88,8 @@ namespace DLARS.Services
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Error occured in updating request status.", ex);
+                _logger.LogError(ex, "Error occured while updating request with ID {RequestId}", requestUpdate.RequestId);
+                throw;
             }
         }
 
@@ -97,7 +100,7 @@ namespace DLARS.Services
                 var proofPath = _fileStorageService.SaveFile(imagedReceived.ProofImage, "imageproof");
                 var parentIdPath = _fileStorageService.SaveFile(imagedReceived.ParentValidImage, "parentvalidid");
                 var medCertPath = _fileStorageService.SaveFile(imagedReceived.MedicalCertificate, "medicalcertificate");
-              
+
                 var updatedModel = new AddImageUploadInRequestModel
                 {
                     RequestId = imagedReceived.RequestId,
@@ -111,7 +114,8 @@ namespace DLARS.Services
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Error in adding supporting documents in request", ex);
+                _logger.LogError(ex, "Error occured while adding supporting documents in request with ID {ReqeustId}", imagedReceived.RequestId);
+                throw;
             }
         }
 

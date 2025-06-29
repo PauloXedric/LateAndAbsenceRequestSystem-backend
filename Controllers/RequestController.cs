@@ -24,7 +24,7 @@ namespace DLARS.Controller
 
 
 
-        [HttpPost("AddRequest")]
+        [HttpPost]
         public async Task<IActionResult> AddNewRequest([FromBody] RequestCreateModel request)
         {
 
@@ -45,8 +45,8 @@ namespace DLARS.Controller
 
 
         //[Authorize(Roles = "Secretary,chairperson,Director")]
-        [HttpGet("DisplayRequest")]
-        public async Task<ActionResult<PagedResult<RequestReadModel>>> ReadRequest([FromQuery] RequestStatus? statusId, [FromQuery] PaginationParams pagination, [FromQuery] string? filter)
+        [HttpGet]
+        public async Task<ActionResult<PagedResult<RequestReadModel>>> GetAllRequests([FromQuery] RequestStatus? statusId, [FromQuery] PaginationParams pagination, [FromQuery] string? filter)
         {
             if (!statusId.HasValue)
             {

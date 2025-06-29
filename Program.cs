@@ -53,6 +53,7 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
+ 
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
@@ -61,7 +62,8 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] 
+        ?? throw new InvalidOperationException("JWT key is missing.")))
     };
 });
 
@@ -123,7 +125,7 @@ app.UseStaticFiles(new StaticFileOptions
     OnPrepareResponse = ctx =>
     {
         var contentType = ctx.Context.Response.ContentType;
-        if (!contentType.StartsWith("image/"))
+        if (string.IsNullOrWhiteSpace(contentType) || !contentType.StartsWith("image/"))
         {
             ctx.Context.Response.StatusCode = 403;
             ctx.Context.Response.ContentLength = 0;

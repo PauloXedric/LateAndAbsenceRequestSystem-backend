@@ -20,11 +20,13 @@ namespace DLARS.Services
     {
         private readonly IConfiguration _config;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ILogger<TokenService> _logger;
 
-        public TokenService(IConfiguration config, UserManager<ApplicationUser> userManager)
+        public TokenService(IConfiguration config, UserManager<ApplicationUser> userManager, ILogger<TokenService> logger)
         {
             _config = config;
             _userManager = userManager;
+            _logger = logger;
         }
 
 
@@ -37,7 +39,7 @@ namespace DLARS.Services
 
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Email, identityUser.Email),
+                    new Claim(ClaimTypes.Email, identityUser.Email ?? string.Empty),
                     new Claim(ClaimTypes.NameIdentifier, identityUser.Id)
                 };
 
@@ -46,15 +48,18 @@ namespace DLARS.Services
                 return BuildToken(claims, TimeSpan.FromHours(24));
             }
             catch (Exception ex) 
-            { 
-                throw new ApplicationException("Error occured while generating log in token.", ex); 
+            {
+                _logger.LogError(ex, "Error occured while generating log in token user email {Email}", identityUser.Email );
+                throw;
             }
         }
 
 
         public string GenerateUrlToken(RequestGenTokenModel request)
         {
-            var claims = new List<Claim>
+            try
+            {
+                var claims = new List<Claim>
             {
                   new Claim("requestId", request.RequestId.ToString()),
                   new Claim("studentName", request.StudentName),
@@ -66,19 +71,33 @@ namespace DLARS.Services
                   new Claim("reason", request.Reason)
             };
 
-            return BuildToken(claims, TimeSpan.FromHours(12));
+                return BuildToken(claims, TimeSpan.FromHours(12));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occured while generating UrlToken for user request");
+                throw;
+            }
         }
 
 
         public string GenerateInvitationUrlToken(InvitationGenTokenModel invitation)
         {
-            var claims = new List<Claim>
+            try
+            {
+                var claims = new List<Claim>
             {
                new Claim("userEmail", invitation.UserEmail),
                new Claim("userRole", invitation.UserRole),
             };
 
-            return BuildToken(claims, TimeSpan.FromHours(24));
+                return BuildToken(claims, TimeSpan.FromHours(24));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occured whiile generating UrlToken for role invitation");
+                throw;
+            }
         }
 
 
@@ -86,7 +105,15 @@ namespace DLARS.Services
 
         private string BuildToken(IEnumerable<Claim> claims, TimeSpan validFor)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var jwtKey = _config["Jwt:Key"];
+
+            if (string.IsNullOrWhiteSpace(jwtKey))
+            {
+                _logger.LogCritical("JWT key is missing in configuration. Cannot continue.");
+                throw new InvalidOperationException("Missing JWT signing key.");
+            }
+
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
             var signingCred = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512Signature);
 
             var token = new JwtSecurityToken(

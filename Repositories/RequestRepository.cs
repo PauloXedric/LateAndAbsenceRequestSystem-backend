@@ -1,42 +1,29 @@
 ﻿using DLARS.Data;
 using DLARS.Entities;
 using DLARS.Enums;
-using DLARS.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Collections;
 
 namespace DLARS.Repositories
 {
 
-    public interface IRequestRepository 
+    public interface IRequestRepository : IBaseRepository<RequestEntity>
     {
-        Task<int> AddRequestAsync(RequestEntity request);
         IQueryable<RequestEntity> GetRequestByStatusId(RequestStatus statusId, string? filter);
         Task<bool> UpdateRequestStatusAsync(RequestEntity request);
         Task<bool> AddImageInRequestAsync(RequestEntity request);
-
     }
 
 
-    public class RequestRepository : IRequestRepository
+    public class RequestRepository : BaseRepository<RequestEntity>, IRequestRepository
     {
 
         private readonly AppDbContext _dbContext;
 
-        public RequestRepository(AppDbContext dbContext) 
+        public RequestRepository(AppDbContext dbContext) : base(dbContext) 
         {
             _dbContext = dbContext;
         }
 
-
-        public async Task<int> AddRequestAsync(RequestEntity request) 
-        {
-                _dbContext.Request.Add(request);
-                await _dbContext.SaveChangesAsync();
-                return request.RequestId;
-        }
-        
-
+    
         public IQueryable<RequestEntity> GetRequestByStatusId(RequestStatus statusId, string? filter) 
         {
             var query = _dbContext.Request
