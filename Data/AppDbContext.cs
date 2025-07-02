@@ -30,12 +30,16 @@ namespace DLARS.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<TeacherAssignedSubjectsModelView>()
                .HasNoKey()
                .ToView("TeacherAssignedSubjects");
+       
+            modelBuilder.Entity<ApplicationUser>()
+            .Property(u => u.Status)
+            .HasConversion<string>();
 
-            base.OnModelCreating(modelBuilder);
         }
 
     }

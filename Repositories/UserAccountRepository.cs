@@ -1,6 +1,8 @@
-﻿using DLARS.Models.Identity;
+﻿using DLARS.Enums;
+using DLARS.Models.Identity;
 using DLARS.Models.UserAccountModels;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System.Reflection.Metadata.Ecma335;
 using System.Security.Claims;
 
@@ -11,6 +13,9 @@ namespace DLARS.Repositories
     {
         Task<IdentityResult> AddUserAsync(UserRegisterModel userLogin);
         Task<ApplicationUser> GetUserAccountAsync(UserLoginModel userLogin);
+        Task<List<UserReadModel>> GetAllUserWithRoleAsync();
+        Task<bool> UpdateUserRoleAndStatusAsync(ApplicationUser user, string newRole, UserStatus newStatus);
+        Task<ApplicationUser?> GetByUserCodeAsync(string userCode);
     }
 
 
@@ -41,7 +46,7 @@ namespace DLARS.Repositories
 
             if (newUser.Succeeded) 
             {
-                var role =  userAccount.Role;
+                var role =  userAccount.Role.ToString();
 
                 var roleExists = await _userRole.RoleExistsAsync(role);
                 if (!roleExists)
@@ -67,6 +72,52 @@ namespace DLARS.Repositories
             return identifyUser;
         }
 
+
+        public async Task<List<UserReadModel>> GetAllUserWithRoleAsync() 
+        {
+            var users = _userManager.Users.ToList();
+            var result = new List<UserReadModel>();
+
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+
+                result.Add(new UserReadModel
+                {
+                    UserCode = user.UserCode,
+                    LastName = user.LastName,
+                    FirstName = user.FirstName,
+                    Email = user.Email,                 
+                    Status = user.Status.ToString(),
+                    Role = roles.FirstOrDefault()
+                });
+            }
+
+            return result;
+        }
+
+
+        public async Task<bool> UpdateUserRoleAndStatusAsync(ApplicationUser user, string newRole, UserStatus newStatus)
+        {
+            user.Status = newStatus;
+
+            var updateResult = await _userManager.UpdateAsync(user);
+
+            var currentRoles = await _userManager.GetRolesAsync(user);
+            var removeResult = await _userManager.RemoveFromRolesAsync(user, currentRoles);
+            var addResult = await _userManager.AddToRoleAsync(user, newRole);
+
+            bool roleUpdated = removeResult.Succeeded && addResult.Succeeded;
+
+            return updateResult.Succeeded || roleUpdated;
+        }
+
+
+        public async Task<ApplicationUser?> GetByUserCodeAsync(string userCode)
+        {
+            return await _userManager.Users
+                .FirstOrDefaultAsync(u => u.UserCode == userCode);
+        }
 
 
     }

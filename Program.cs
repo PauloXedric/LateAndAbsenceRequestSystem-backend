@@ -12,6 +12,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using DLARS.Middlewares;
 using OpenApiSecurityScheme = Microsoft.OpenApi.Models.OpenApiSecurityScheme;
+using System.Text.Json.Serialization;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -83,7 +84,9 @@ builder.Services.AddCors(options =>
 
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(opt => {
+    opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 
 
 builder.Services.AddEndpointsApiExplorer();

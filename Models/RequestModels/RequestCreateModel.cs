@@ -20,10 +20,10 @@ namespace DLARS.Models.Requests
         public string SubjectCode { get; set; } = string.Empty;
 
         [Required]
-        public string DateOfAbsence { get; set; } = string.Empty;
+        public DateTime DateOfAbsence { get; set; } 
 
         [Required]
-        public string DateofAttendance { get; set; } = string.Empty;
+        public DateTime DateofAttendance { get; set; }
 
         [Required]
         public string ParentsCpNumber { get; set; } = string.Empty;

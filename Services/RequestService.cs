@@ -49,7 +49,7 @@ namespace DLARS.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occured while adding new request");
+                _logger.LogError(ex, "Error occurred while adding new request");
                 throw;
             }
         }
@@ -73,7 +73,7 @@ namespace DLARS.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occured while displaying request data");
+                _logger.LogError(ex, "Error occurred while displaying request data");
                 throw;
             }
         }
@@ -83,12 +83,13 @@ namespace DLARS.Services
         {
             try
             {
-                var requestEntity = _mapper.Map<RequestEntity>(requestUpdate);
-                return await _requestRepository.UpdateRequestStatusAsync(requestEntity);
+                return await _requestRepository.UpdateRequestStatusAsync(
+                    requestUpdate.RequestId,
+                    requestUpdate.StatusId);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occured while updating request with ID {RequestId}", requestUpdate.RequestId);
+                _logger.LogError(ex, "Error occurred while updating request with ID {RequestId}", requestUpdate.RequestId);
                 throw;
             }
         }
@@ -114,7 +115,7 @@ namespace DLARS.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occured while adding supporting documents in request with ID {ReqeustId}", imagedReceived.RequestId);
+                _logger.LogError(ex, "Error occurred while adding supporting documents in request with ID {ReqeustId}", imagedReceived.RequestId);
                 throw;
             }
         }

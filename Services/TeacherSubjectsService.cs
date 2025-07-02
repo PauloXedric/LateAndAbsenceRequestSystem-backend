@@ -68,7 +68,7 @@ namespace DLARS.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occured while registering subject with Code {SubjectCode} to teacher with Code {TeacherCode}", 
+                _logger.LogError(ex, "Error occurred while registering subject with Code {SubjectCode} to teacher with Code {TeacherCode}", 
                     teacherSubjectsCode.SubjectCode, 
                     teacherSubjectsCode.TeacherCode);
                 throw;
@@ -95,7 +95,7 @@ namespace DLARS.Services
             }
             catch (Exception ex) 
             {
-                _logger.LogError(ex, "Error occured while getting a list of teacher with their subjects");
+                _logger.LogError(ex, "Error occurred while getting a list of teacher with their subjects");
                 throw;
             }
         }
@@ -117,7 +117,7 @@ namespace DLARS.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occured while deleting teacher with ID {TeacherId} with its subjects", teacherId);
+                _logger.LogError(ex, "Error occurred while deleting teacher with ID {TeacherId} with its subjects", teacherId);
                 throw;
             }
         }

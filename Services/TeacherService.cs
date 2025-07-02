@@ -90,9 +90,8 @@ namespace DLARS.Services
                     return Result.DoesNotExist;
                 }
 
-                existingTeacher.TeacherCode = updateTeacher.TeacherCode;
-                existingTeacher.TeacherName = updateTeacher.TeacherName;
-
+                _mapper.Map(updateTeacher, existingTeacher);
+        
                 await _teacherRepository.UpdateAsync(existingTeacher);
                 return Result.Success;
             }

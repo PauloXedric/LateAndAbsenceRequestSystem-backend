@@ -49,7 +49,7 @@ namespace DLARS.Services
             }
             catch (Exception ex) 
             {
-                _logger.LogError(ex, "Error occured while generating log in token user email {Email}", identityUser.Email );
+                _logger.LogError(ex, "Error occurred while generating log in token user email {Email}", identityUser.Email );
                 throw;
             }
         }
@@ -75,7 +75,7 @@ namespace DLARS.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occured while generating UrlToken for user request");
+                _logger.LogError(ex, "Error occurred while generating UrlToken for user request");
                 throw;
             }
         }
@@ -95,7 +95,7 @@ namespace DLARS.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occured whiile generating UrlToken for role invitation");
+                _logger.LogError(ex, "Error occurred while generating UrlToken for role invitation");
                 throw;
             }
         }

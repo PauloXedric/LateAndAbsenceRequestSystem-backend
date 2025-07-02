@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+﻿using DLARS.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace DLARS.Models.UserAccountModels
@@ -9,9 +9,9 @@ namespace DLARS.Models.UserAccountModels
         public string UserName { get; set; } = string.Empty;
         [Required]  
         public string Password { get; set; } = string.Empty;
+
         [Required]
-        [DefaultValue("User")]
-        public string Role { get; set; } = "User";
+        public UserRole Role { get; set; } 
 
         [Required]
         public string UserCode { get; set; } = string.Empty;

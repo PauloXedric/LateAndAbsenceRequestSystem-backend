@@ -76,7 +76,7 @@ namespace DLARS.Services
             }
             catch (Exception ex) 
             {
-                _logger.LogError(ex, "Error occured while retrieving all subject data.");
+                _logger.LogError(ex, "Error occurred while retrieving all subject data.");
                 throw;
             }
         }
@@ -93,15 +93,14 @@ namespace DLARS.Services
                     return Result.DoesNotExist;
                 }
 
-                existingSubject.SubjectCode = updateSubject.SubjectCode;
-                existingSubject.SubjectName = updateSubject.SubjectName;
-
+                _mapper.Map(updateSubject, existingSubject);
+            
                 await _subjectRepository.UpdateAsync(existingSubject);
                 return Result.Success;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occured while updating subject with Code {SubjectCode}", updateSubject.SubjectCode);
+                _logger.LogError(ex, "Error occurred while updating subject with Code {SubjectCode}", updateSubject.SubjectCode);
                 throw;
             }
         }
@@ -122,7 +121,7 @@ namespace DLARS.Services
             }
             catch (Exception ex) 
             {
-                _logger.LogError(ex, "Error occured while deleting subject with ID {SubjectId}", subjectId);
+                _logger.LogError(ex, "Error occurred while deleting subject with ID {SubjectId}", subjectId);
                 throw;
             }
         }

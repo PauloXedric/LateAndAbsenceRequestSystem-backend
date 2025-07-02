@@ -41,7 +41,7 @@ namespace DLARS.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occured while saving a file to folder {}", folderName);
+                _logger.LogError(ex, "Error occurred while saving a file to folder {}", folderName);
                 throw;
             }
         }

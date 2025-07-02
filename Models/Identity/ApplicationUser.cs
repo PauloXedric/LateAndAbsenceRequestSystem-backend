@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using DLARS.Enums;
+using Microsoft.AspNetCore.Identity;
 
 namespace DLARS.Models.Identity
 {
@@ -8,11 +9,8 @@ namespace DLARS.Models.Identity
         public string LastName { get; set; } = string.Empty;
         public string UserCode { get; set; } = string.Empty;
 
-        public string Status { get; private set; }
+        public UserStatus Status { get; set; } = UserStatus.Inactive;
 
-        public ApplicationUser() 
-        {
-            Status = "Inactive";
-        }
+       
     }
 }

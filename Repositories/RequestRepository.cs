@@ -8,7 +8,7 @@ namespace DLARS.Repositories
     public interface IRequestRepository : IBaseRepository<RequestEntity>
     {
         IQueryable<RequestEntity> GetRequestByStatusId(RequestStatus statusId, string? filter);
-        Task<bool> UpdateRequestStatusAsync(RequestEntity request);
+        Task<bool> UpdateRequestStatusAsync(int requestId, RequestStatus status);
         Task<bool> AddImageInRequestAsync(RequestEntity request);
     }
 
@@ -38,12 +38,12 @@ namespace DLARS.Repositories
         }
 
   
-        public async Task<bool> UpdateRequestStatusAsync(RequestEntity request) 
+        public async Task<bool> UpdateRequestStatusAsync(int requestId, RequestStatus status) 
         {
-            var result = await _dbContext.Request.FindAsync(request.RequestId);
+            var result = await _dbContext.Request.FindAsync(requestId);
             if (result == null) return false;
 
-            result.SetStatus(request.StatusId);
+            result.SetStatus(status);
             await _dbContext.SaveChangesAsync();
 
             return true;
