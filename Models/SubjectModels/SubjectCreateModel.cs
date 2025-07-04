@@ -5,9 +5,9 @@ namespace DLARS.Models.SubjectModel
     public class SubjectCreateModel
     {
         [Required]
-        public string SubjectCode { get; set; } = string.Empty;
+        public string SubjectCode { get; set; } 
 
         [Required]
-        public string SubjectName { get; set; } = string.Empty;
+        public string SubjectName { get; set; } 
     }
 }

@@ -73,7 +73,7 @@ namespace DLARS.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while displaying request data");
+                _logger.LogError(ex, "Error occurred while getting the list request data");
                 throw;
             }
         }

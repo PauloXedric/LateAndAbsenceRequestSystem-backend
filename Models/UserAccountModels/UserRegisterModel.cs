@@ -6,21 +6,20 @@ namespace DLARS.Models.UserAccountModels
     public class UserRegisterModel
     {
         [Required]
-        public string UserName { get; set; } = string.Empty;
+        public string UserName { get; set; } 
         [Required]  
-        public string Password { get; set; } = string.Empty;
+        public string Password { get; set; } 
 
         [Required]
         public UserRole Role { get; set; } 
 
         [Required]
-        public string UserCode { get; set; } = string.Empty;
+        public string UserCode { get; set; } 
 
         [Required]
-        public string LastName {  get; set; } = string.Empty;
-
+        public string LastName {  get; set; } 
         [Required]
-        public string FirstName { get; set; } = string.Empty;
+        public string FirstName { get; set; } 
 
     }
 

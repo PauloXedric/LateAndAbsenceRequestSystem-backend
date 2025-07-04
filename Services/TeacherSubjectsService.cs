@@ -95,7 +95,7 @@ namespace DLARS.Services
             }
             catch (Exception ex) 
             {
-                _logger.LogError(ex, "Error occurred while getting a list of teacher with their subjects");
+                _logger.LogError(ex, "Error occurred while getting the list of teacher with their subjects");
                 throw;
             }
         }

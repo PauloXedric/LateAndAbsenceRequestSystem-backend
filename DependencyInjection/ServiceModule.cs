@@ -11,6 +11,7 @@ namespace DLARS.DependencyInjection
         protected override void Load(ContainerBuilder builder) 
         {
             builder.RegisterType<RequestService>().As<IRequestService>().InstancePerLifetimeScope();
+            builder.RegisterType<RequestHistoryService>().As<IRequestHistoryService>().InstancePerLifetimeScope();
             builder.RegisterType<UserAccountService>().As<IUserAccountService>().InstancePerLifetimeScope();
             builder.RegisterType<TeacherService>().As<ITeacherService>().InstancePerLifetimeScope();
             builder.RegisterType<SubjectService>().As<ISubjectService>().InstancePerLifetimeScope();

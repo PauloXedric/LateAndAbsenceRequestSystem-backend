@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DLARS.Entities;
+using DLARS.Models.RequestHistory;
 using DLARS.Models.Requests;
 using DLARS.Models.SubjectModel;
 using DLARS.Models.SubjectModels;
@@ -16,9 +17,10 @@ namespace DLARS.Mappings
         {
             CreateMap<RequestEntity, RequestCreateModel>();
             CreateMap<RequestCreateModel, RequestEntity>();
-            CreateMap<AddImageUploadInRequestModel, RequestEntity>();
-                     
-            CreateMap<RequestEntity, RequestReadModel>();                
+            CreateMap<AddImageUploadInRequestModel, RequestEntity>();                  
+            CreateMap<RequestEntity, RequestReadModel>();     
+            
+            CreateMap<RequestHistoryCreateModel, RequestHistoryEntity>();
 
             CreateMap<TeacherCreateModel, TeacherEntity>();
             CreateMap<TeacherUpdateModel, TeacherEntity>();
@@ -29,11 +31,7 @@ namespace DLARS.Mappings
             CreateMap<SubjectEntity, SubjectReadModel>();
 
             CreateMap<TeacherSubjectsIdModel, TeacherSubjectEntity>();
-
-
            
-
-            CreateMap<TeacherSubjectEntity, TeacherAssignedSubjectsModelView>();
         }
 
 

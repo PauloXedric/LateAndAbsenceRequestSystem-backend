@@ -3,9 +3,6 @@ using DLARS.Helpers;
 using DLARS.Models.Pagination;
 using DLARS.Models.Requests;
 using DLARS.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DLARS.Controller

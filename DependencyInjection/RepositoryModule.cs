@@ -9,6 +9,7 @@ namespace DLARS.DependencyInjection
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<RequestRepository>().As<IRequestRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<RequestHistoryRepository>().As<IRequestHistoryRepository>().InstancePerLifetimeScope();
             builder.RegisterType<UserAccountRepository>().As<IUserAccountRepository>().InstancePerLifetimeScope();
             builder.RegisterType<TeacherRepository>().As<ITeacherRepository>().InstancePerLifetimeScope();
             builder.RegisterType<SubjectRepository>().As<ISubjectRepository>().InstancePerLifetimeScope();
