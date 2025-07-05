@@ -34,7 +34,8 @@ namespace DLARS.Controller
 
             return result switch
             {
-                Result.Success => Ok(ApiResponse.SuccessMessage("Request submit successfully.")),
+                Result.Success => Ok(ApiResponse.SuccessMessage("Request submitted successfully.")),
+                Result.AlreadyExist=> Conflict(ApiResponse.FailMessage("Request already submit, please wait for approval")),
                 Result.Failed => StatusCode(500, ApiResponse.FailMessage("Failed to submit request.")),
                 _ => StatusCode(500, ApiResponse.FailMessage("Unexpected result."))
             };

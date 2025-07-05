@@ -41,6 +41,12 @@ namespace DLARS.Services
         {
             try
             {
+                bool exist = await _requestRepository.SubjectExistsInRequestAsync(request.StudentNumber, request.SubjectCode);
+
+                if (exist)
+                {
+                    return Result.AlreadyExist;
+                }
                 var requestEntity = _mapper.Map<RequestEntity>(request);
                 
                 var result = await _requestRepository.AddAsync(requestEntity);
@@ -49,7 +55,7 @@ namespace DLARS.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while adding new request");
+                _logger.LogError(ex, "Error occurred while adding new request with student number {StudentNumber}", request.StudentNumber);
                 throw;
             }
         }

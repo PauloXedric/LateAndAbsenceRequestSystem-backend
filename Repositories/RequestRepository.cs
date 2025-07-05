@@ -1,6 +1,7 @@
 ﻿using DLARS.Data;
 using DLARS.Entities;
 using DLARS.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace DLARS.Repositories
 {
@@ -10,6 +11,7 @@ namespace DLARS.Repositories
         IQueryable<RequestEntity> GetRequestByStatusId(RequestStatus statusId, string? filter);
         Task<bool> UpdateRequestStatusAsync(int requestId, RequestStatus status);
         Task<bool> AddImageInRequestAsync(RequestEntity request);
+        Task<bool> SubjectExistsInRequestAsync(string studentNumber, string subjectCode);
     }
 
 
@@ -63,6 +65,14 @@ namespace DLARS.Repositories
             await _dbContext.SaveChangesAsync();
 
             return true;
+        }
+
+
+        public async Task<bool> SubjectExistsInRequestAsync(string studentNumber, string subjectCode)
+        {
+            return await _dbContext.Request
+                  .AnyAsync(r => r.StudentNumber == studentNumber && r.SubjectCode == subjectCode);
+            
         }
 
     }
