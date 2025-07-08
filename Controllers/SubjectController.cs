@@ -6,7 +6,7 @@ using DLARS.Models.SubjectModels;
 using DLARS.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DLARS.Controller
+namespace DLARS.Controllers
 {
     [Route("api/[controller]")]
     //[Authorize(Roles = "chairperson,Director")]
@@ -38,7 +38,6 @@ namespace DLARS.Controller
                 Result.AlreadyExist => Conflict(ApiResponse.FailMessage("Subject already exists.")),
                 _ => StatusCode(500, ApiResponse.FailMessage("Unexpected result."))
             };
-
         }
 
 
@@ -48,7 +47,6 @@ namespace DLARS.Controller
             var subjectList = await _subjectService.GetAllSubjectAsync();
             return Ok(subjectList);
         }
-
 
 
         [HttpPut]
@@ -87,6 +85,8 @@ namespace DLARS.Controller
                 _ => StatusCode(500, ApiResponse.FailMessage("Unexpected result."))
             };
         }
+        
+
 
     }
 }

@@ -2,11 +2,9 @@
 using DLARS.Helpers;
 using DLARS.Models.TeacherModels;
 using DLARS.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DLARS.Controller
+namespace DLARS.Controllers
 {
     [Route("api/[controller]")]
     //[Authorize(Roles = "chairperson,Director")]
@@ -38,9 +36,7 @@ namespace DLARS.Controller
                 Result.AlreadyExist => Conflict(ApiResponse.FailMessage("Instructor already exists.")),
                 _ => StatusCode(500, ApiResponse.FailMessage("Unexpected result."))
             };
-
         }
-
 
 
         [HttpGet]
@@ -71,7 +67,6 @@ namespace DLARS.Controller
         }
 
 
-
         [HttpDelete("{teacherId}")]
         public async Task<IActionResult> DeleteTeacher([FromRoute] int teacherId)
         {
@@ -89,6 +84,7 @@ namespace DLARS.Controller
                 _ => StatusCode(500, ApiResponse.FailMessage("Unexpected result."))
             };
         }
+
 
 
     }

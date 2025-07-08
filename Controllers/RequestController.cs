@@ -5,7 +5,7 @@ using DLARS.Models.Requests;
 using DLARS.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DLARS.Controller
+namespace DLARS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -35,7 +35,7 @@ namespace DLARS.Controller
             return result switch
             {
                 Result.Success => Ok(ApiResponse.SuccessMessage("Request submitted successfully.")),
-                Result.AlreadyExist=> Conflict(ApiResponse.FailMessage("Request already submit, please wait for approval")),
+                Result.AlreadyExist=> Conflict(ApiResponse.FailMessage("Request already submit, please wait for approval.")),
                 Result.Failed => StatusCode(500, ApiResponse.FailMessage("Failed to submit request.")),
                 _ => StatusCode(500, ApiResponse.FailMessage("Unexpected result."))
             };
@@ -43,7 +43,7 @@ namespace DLARS.Controller
 
 
         //[Authorize(Roles = "Secretary,chairperson,Director")]
-        [HttpGet]
+        [HttpGet("All")]
         public async Task<ActionResult<PagedResult<RequestReadModel>>> GetAllRequests([FromQuery] RequestStatus? statusId, [FromQuery] PaginationParams pagination, [FromQuery] string? filter)
         {
             if (!statusId.HasValue)
@@ -53,7 +53,19 @@ namespace DLARS.Controller
 
             var requestResult = await _requestService.GetRequestByStatusIdAsync(statusId.Value, pagination, filter);
             return Ok(requestResult);
+        }
 
+
+        [HttpGet("{requestId}")]
+        public async Task<ActionResult<bool>> GetSubmittedStatus([FromRoute] int requestId)
+        {
+            if (requestId <= 0)
+            {
+                return BadRequest("Invalid requestId.");
+            }
+
+            var result = await _requestService.CheckRequestSubmittedStatusAsync(requestId);
+            return Ok(result);
         }
 
 
@@ -79,7 +91,6 @@ namespace DLARS.Controller
             var result = await _requestService.AddImageInRequestAsync(imageRequest);
             return Ok(result);
         }
-
 
 
 

@@ -16,8 +16,7 @@ namespace DLARS.Mappings
         public MappingProfile()
         {
             CreateMap<RequestEntity, RequestCreateModel>();
-            CreateMap<RequestCreateModel, RequestEntity>();
-            CreateMap<AddImageUploadInRequestModel, RequestEntity>();                  
+            CreateMap<RequestCreateModel, RequestEntity>();                       
             CreateMap<RequestEntity, RequestReadModel>();     
             
             CreateMap<RequestHistoryCreateModel, RequestHistoryEntity>();

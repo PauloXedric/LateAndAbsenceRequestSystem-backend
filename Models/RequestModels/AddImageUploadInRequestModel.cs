@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DLARS.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace DLARS.Models.Requests
 {
@@ -8,7 +9,7 @@ namespace DLARS.Models.Requests
         public int RequestId { get; set; }
 
         [Required]
-        public int StatusId { get; set; }
+        public RequestStatus StatusId { get; set; }
 
         [Required]
         public string ProofImage { get; set; }
@@ -17,5 +18,8 @@ namespace DLARS.Models.Requests
         public string ParentValidImage { get; set; }
 
         public string? MedicalCertificate { get; set; }
+
+        [Required]
+        public bool Submitted { get; set; }
     }
 }

@@ -16,6 +16,7 @@ namespace DLARS.Services
         Task<PagedResult<RequestReadModel>> GetRequestByStatusIdAsync(RequestStatus statusId, PaginationParams pagination, string? filter);
         Task<bool> UpdateRequestStatusAsync(RequestUpdateModel requestUpdate);
         Task<bool> AddImageInRequestAsync(AddImageReceivedInRequestModel addImageInRequest);
+        Task<bool> CheckRequestSubmittedStatusAsync(int requestId);
     }
 
 
@@ -114,10 +115,11 @@ namespace DLARS.Services
                     StatusId = imagedReceived.StatusId,
                     ProofImage = proofPath,
                     ParentValidImage = parentIdPath,
-                    MedicalCertificate = medCertPath
+                    MedicalCertificate = medCertPath,
+                    Submitted = imagedReceived.Submitted
                 };
-                var requestEntity = _mapper.Map<RequestEntity>(updatedModel);
-                return await _requestRepository.AddImageInRequestAsync(requestEntity);
+                
+                return await _requestRepository.AddImageInRequestAsync(updatedModel);
             }
             catch (Exception ex)
             {
@@ -126,6 +128,19 @@ namespace DLARS.Services
             }
         }
 
+
+        public async Task<bool> CheckRequestSubmittedStatusAsync(int requestId)
+        {
+            try
+            {
+                return await _requestRepository.GetSubmittedStatusByidAsync(requestId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while checking submitted status of request with Id {RequestId}", requestId);
+                throw;
+            }
+        }
    
     }
 }

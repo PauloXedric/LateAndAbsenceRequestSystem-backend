@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using DLARS.Controller;
+using DLARS.Controllers;
 using DLARS.Entities;
 using DLARS.Enums;
 using DLARS.Models.TeacherSubjectModels;

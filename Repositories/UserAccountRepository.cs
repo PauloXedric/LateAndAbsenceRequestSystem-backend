@@ -16,6 +16,7 @@ namespace DLARS.Repositories
         Task<List<UserReadModel>> GetAllUserWithRoleAsync();
         Task<bool> UpdateUserRoleAndStatusAsync(ApplicationUser user, string newRole, UserStatus newStatus);
         Task<ApplicationUser?> GetByUserCodeAsync(string userCode);
+        Task<ApplicationUser?> GetByUserNameAsync(string username);
     }
 
 
@@ -119,6 +120,12 @@ namespace DLARS.Repositories
                 .FirstOrDefaultAsync(u => u.UserCode == userCode);
         }
 
+
+        public async Task<ApplicationUser?> GetByUserNameAsync(string username)
+        {
+            return await _userManager.Users
+                .FirstOrDefaultAsync(u => u.UserName == username);
+        }
 
     }
 }

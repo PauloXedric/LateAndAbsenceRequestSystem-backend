@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DLARS.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace DLARS.Models.Requests
 {
@@ -16,6 +17,8 @@ namespace DLARS.Models.Requests
         public IFormFile? MedicalCertificate { get; set; }
 
         [Required]
-        public int StatusId { get; set; }
+        public RequestStatus StatusId { get; set; }
+
+        public bool Submitted { get; set; } = true;
     }
 }

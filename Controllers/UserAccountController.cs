@@ -5,7 +5,7 @@ using DLARS.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 
-namespace DLARS.Controller
+namespace DLARS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -61,20 +61,31 @@ namespace DLARS.Controller
                     tokenString = await _tokenService.GenerateUserTokenAsync(user!)
                 }),
 
-                Result.Failed => StatusCode(403, ApiResponse.FailMessage("Wait for the Director's account activation")),
+                Result.Failed => StatusCode(403, ApiResponse.FailMessage("Wait for the Director's account activation.")),
 
-                Result.DoesNotExist => NotFound(ApiResponse.FailMessage("Incorrect username or password")),
+                Result.DoesNotExist => NotFound(ApiResponse.FailMessage("Account does not exist.")),
 
-                _ => StatusCode(500, ApiResponse.FailMessage("Unexpected login error"))
+                _ => StatusCode(500, ApiResponse.FailMessage("Unexpected login error."))
             };
         }
 
 
-        [HttpGet]
+        [HttpGet("All")]
         public async Task<ActionResult<List<UserReadModel>>> GetAllUsers()
         {
             var users = await _userAccountService.GetAllUserWithRoleAsync();
             return Ok(users);
+        }
+
+
+        [HttpGet("CheckUser/{username}")]
+        public async Task<ActionResult<bool>> CheckUserAsync([FromRoute] string username)
+        {
+            if (string.IsNullOrWhiteSpace(username))
+                return BadRequest("Username cannot be empty.");
+
+            var userExist = await _userAccountService.CheckUserExistenceAsync(username);
+            return Ok(userExist);   
         }
 
 
@@ -95,8 +106,8 @@ namespace DLARS.Controller
                 Result.Failed => StatusCode(500, ApiResponse.FailMessage("Error in updating user.")),
                 _ => StatusCode(500, ApiResponse.FailMessage("Unexpected result."))
             };
-
         }
+
 
     }
 }

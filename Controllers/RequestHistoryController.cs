@@ -20,7 +20,6 @@ namespace DLARS.Controllers
         }
 
 
-
         [HttpPost]
         public async Task<IActionResult> AddRequestHistory([FromBody] RequestHistoryCreateModel history)
         {
@@ -56,5 +55,7 @@ namespace DLARS.Controllers
             var historyList = await _requestHistoryService.GetAllListAsync(pagination, dateFilter, studentNumberFilter);
             return Ok(historyList);
         }
+
+
     }
 }

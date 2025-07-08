@@ -17,6 +17,8 @@ namespace DLARS.Services
         Task<(Result, ApplicationUser?)> LoginUserAccountAsync(UserLoginModel userLogin);
         Task<List<UserReadModel>> GetAllUserWithRoleAsync();
         Task<Result> UpdateUserRoleAndStatusAsync(UserUpdateModel userUpdate);
+        Task<bool> CheckUserExistenceAsync(string username);
+
     }
 
 
@@ -122,6 +124,29 @@ namespace DLARS.Services
                 throw;
             }
         }
+
+
+        public async Task<bool> CheckUserExistenceAsync(string username)
+        {
+            try
+            {
+                var user = await _userAccountRepository.GetByUserNameAsync(username);
+
+                if (user == null)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while checking username {UserName}", username);
+                throw;
+            }
+        }
+
+
 
     }
 }

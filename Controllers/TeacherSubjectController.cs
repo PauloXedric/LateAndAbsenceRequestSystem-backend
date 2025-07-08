@@ -3,10 +3,9 @@ using DLARS.Helpers;
 using DLARS.Models.TeacherSubjectModels;
 using DLARS.Services;
 using DLARS.Views;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DLARS.Controller
+namespace DLARS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -40,8 +39,8 @@ namespace DLARS.Controller
                 Result.AlreadyExist => Conflict(ApiResponse.FailMessage("Subject Already assigned to the instructor.")),
                 _ => StatusCode(500, "Unknown error")
             };
-
         }
+
 
         [HttpGet]
         public async Task<ActionResult<List<TeacherAssignedSubjectsModelView>>> GetAllTeacherAssignedSubjects()

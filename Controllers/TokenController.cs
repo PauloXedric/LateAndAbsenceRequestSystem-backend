@@ -3,7 +3,7 @@ using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using DLARS.Models.UrlTokenModels;
 
-namespace DLARS.Controller
+namespace DLARS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -40,6 +40,7 @@ namespace DLARS.Controller
             var invitationToken = _tokenService.GenerateInvitationUrlToken(invitation);
             return Ok(new { invitationToken });
         }
+
 
 
     }

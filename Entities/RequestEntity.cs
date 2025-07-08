@@ -26,6 +26,8 @@ namespace DLARS.Entities
         public DateTime? ChairpersonApprovalDate { get; set; }
         public DateTime? DirectorApprovalDate { get; set; }
         public string? MedicalCertificate { get; set; }
+
+        public bool Submitted { get; set; }
      
         public RequestEntity()
         {

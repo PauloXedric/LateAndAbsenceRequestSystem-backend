@@ -30,5 +30,7 @@ namespace DLARS.Models.Requests
 
         [Required]
         public string Reason { get; set; } 
+
+        public bool Submitted { get; set; } = false;
     }
 }
