@@ -9,8 +9,6 @@ namespace DLARS.Models.Identity
         public string LastName { get; set; } = string.Empty;
         public string UserCode { get; set; } = string.Empty;
 
-        public UserStatus Status { get; set; } = UserStatus.Inactive;
-
-       
+        public UserStatus Status { get; set; } = UserStatus.Inactive;     
     }
 }

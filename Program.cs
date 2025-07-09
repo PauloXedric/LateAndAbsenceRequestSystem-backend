@@ -42,6 +42,11 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     options.Password.RequiredLength = 8;
 }).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
 
+builder.Services.Configure<DataProtectionTokenProviderOptions>(opt =>
+{
+    opt.TokenLifespan = TimeSpan.FromMinutes(30);
+});
+
 builder.Services.Configure<PasswordHasherOptions>(options =>
 {
     options.CompatibilityMode = PasswordHasherCompatibilityMode.IdentityV3;

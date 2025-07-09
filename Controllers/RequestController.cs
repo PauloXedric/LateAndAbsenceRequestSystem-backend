@@ -43,7 +43,7 @@ namespace DLARS.Controllers
 
 
         //[Authorize(Roles = "Secretary,chairperson,Director")]
-        [HttpGet("All")]
+        [HttpGet("all")]
         public async Task<ActionResult<PagedResult<RequestReadModel>>> GetAllRequests([FromQuery] RequestStatus? statusId, [FromQuery] PaginationParams pagination, [FromQuery] string? filter)
         {
             if (!statusId.HasValue)
@@ -69,7 +69,7 @@ namespace DLARS.Controllers
         }
 
 
-        [HttpPut("UpdateStatus")]
+        [HttpPut("update-status")]
         public async Task<IActionResult> UpdateRequestStatus([FromBody] RequestUpdateModel requestUpdate)
         {
             if (!ModelState.IsValid)
@@ -83,7 +83,7 @@ namespace DLARS.Controllers
         }
 
 
-        [HttpPut("AddImageProof")]
+        [HttpPut("add-image-proof")]
         public async Task<IActionResult> AddImageProofInRequest([FromForm] AddImageReceivedInRequestModel imageRequest)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);

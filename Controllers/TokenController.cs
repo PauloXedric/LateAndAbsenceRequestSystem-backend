@@ -16,7 +16,7 @@ namespace DLARS.Controllers
         }
 
        
-        [HttpPost("GenerateUrlToken")]
+        [HttpPost("generate-url-token")]
         public IActionResult GenerateNewToken([FromBody] RequestGenTokenModel request) 
         {
             if (!ModelState.IsValid)
@@ -29,7 +29,7 @@ namespace DLARS.Controllers
         }
 
 
-        [HttpPost("GenerateInvitationLink")]
+        [HttpPost("generate-invitation-token")]
         public IActionResult GenerateInvitationLink([FromBody] InvitationGenTokenModel invitation)
         {
             if (!ModelState.IsValid)
@@ -39,9 +39,8 @@ namespace DLARS.Controllers
 
             var invitationToken = _tokenService.GenerateInvitationUrlToken(invitation);
             return Ok(new { invitationToken });
-        }
+        }    
 
-
-
+       
     }
 }

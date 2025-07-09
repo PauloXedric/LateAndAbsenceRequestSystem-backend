@@ -1,6 +1,7 @@
 ﻿using DLARS.Models.Identity;
 using DLARS.Models.UrlTokenModels;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -71,7 +72,7 @@ namespace DLARS.Services
                   new Claim("reason", request.Reason)
             };
 
-                return BuildToken(claims, TimeSpan.FromHours(12));
+                return BuildToken(claims, TimeSpan.FromHours(24));
             }
             catch (Exception ex)
             {
@@ -91,7 +92,7 @@ namespace DLARS.Services
                new Claim("userRole", invitation.UserRole),
             };
 
-                return BuildToken(claims, TimeSpan.FromHours(24));
+                return BuildToken(claims, TimeSpan.FromHours(72));
             }
             catch (Exception ex)
             {
@@ -99,8 +100,6 @@ namespace DLARS.Services
                 throw;
             }
         }
-
-
 
 
         private string BuildToken(IEnumerable<Claim> claims, TimeSpan validFor)

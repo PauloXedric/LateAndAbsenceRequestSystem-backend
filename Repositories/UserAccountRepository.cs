@@ -3,6 +3,7 @@ using DLARS.Models.Identity;
 using DLARS.Models.UserAccountModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 using System.Reflection.Metadata.Ecma335;
 using System.Security.Claims;
 
@@ -17,6 +18,9 @@ namespace DLARS.Repositories
         Task<bool> UpdateUserRoleAndStatusAsync(ApplicationUser user, string newRole, UserStatus newStatus);
         Task<ApplicationUser?> GetByUserCodeAsync(string userCode);
         Task<ApplicationUser?> GetByUserNameAsync(string username);
+        Task<string?> GenerateResetPasswordTokenAsync(string email);
+        Task<IdentityResult> ResetPasswordAsync(string email, string encodedToken, string newPassword);
+
     }
 
 
@@ -126,6 +130,29 @@ namespace DLARS.Repositories
             return await _userManager.Users
                 .FirstOrDefaultAsync(u => u.UserName == username);
         }
+
+
+        public async Task<string?> GenerateResetPasswordTokenAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null) return null;
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            return WebUtility.UrlEncode(token);
+        }
+
+
+        public async Task<IdentityResult> ResetPasswordAsync(string email, string encodedToken, string newPassword)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+                return IdentityResult.Failed(new IdentityError { Description = "User not found." });
+
+            var token = WebUtility.UrlDecode(encodedToken);
+            return await _userManager.ResetPasswordAsync(user, token, newPassword);
+        }
+
+
 
     }
 }

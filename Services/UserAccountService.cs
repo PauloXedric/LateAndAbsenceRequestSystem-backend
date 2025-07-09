@@ -3,11 +3,7 @@ using DLARS.Models.Identity;
 using DLARS.Models.UserAccountModels;
 using DLARS.Repositories;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using System.Text.RegularExpressions;
+
 
 namespace DLARS.Services
 {
@@ -18,6 +14,8 @@ namespace DLARS.Services
         Task<List<UserReadModel>> GetAllUserWithRoleAsync();
         Task<Result> UpdateUserRoleAndStatusAsync(UserUpdateModel userUpdate);
         Task<bool> CheckUserExistenceAsync(string username);
+        Task<string?> GenerateResetPasswordTokenAsync(string email);
+        Task<IdentityResult> ResetPasswordAsync(string email, string token, string newPassword);
 
     }
 
@@ -145,6 +143,33 @@ namespace DLARS.Services
                 throw;
             }
         }
+
+        public async Task<string?> GenerateResetPasswordTokenAsync(string email)
+        {
+            try
+            {
+                return await _userAccountRepository.GenerateResetPasswordTokenAsync(email);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while generating reset password token for user: {Email}", email);
+                throw;
+            }
+        }
+
+        public async Task<IdentityResult> ResetPasswordAsync(string email, string token, string newPassword)
+        {
+            try
+            {
+                return await _userAccountRepository.ResetPasswordAsync(email, token, newPassword);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while reseting password of user: {Email}", email);
+                throw;
+            }
+        }
+
 
 
 
