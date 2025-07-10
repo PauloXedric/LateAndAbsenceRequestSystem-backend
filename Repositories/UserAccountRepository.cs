@@ -13,13 +13,14 @@ namespace DLARS.Repositories
     public interface IUserAccountRepository
     {
         Task<IdentityResult> AddUserAsync(UserRegisterModel userLogin);
-        Task<ApplicationUser> GetUserAccountAsync(UserLoginModel userLogin);
+        Task<ApplicationUser?> GetUserAccountAsync(UserLoginModel userLogin);
         Task<List<UserReadModel>> GetAllUserWithRoleAsync();
         Task<bool> UpdateUserRoleAndStatusAsync(ApplicationUser user, string newRole, UserStatus newStatus);
         Task<ApplicationUser?> GetByUserCodeAsync(string userCode);
-        Task<ApplicationUser?> GetByUserNameAsync(string username);
+        Task<bool> GetByUserNameAsync(string username);
         Task<string?> GenerateResetPasswordTokenAsync(string email);
-        Task<IdentityResult> ResetPasswordAsync(string email, string encodedToken, string newPassword);
+        Task<bool> ValidateResetPasswordTokenAsync(ResetTokenValidationModel resetModel);
+        Task<bool> ResetPasswordAsync(string email, string encodedToken, string newPassword);
 
     }
 
@@ -65,7 +66,7 @@ namespace DLARS.Repositories
         }
 
 
-        public async Task<ApplicationUser> GetUserAccountAsync(UserLoginModel userLogin) 
+        public async Task<ApplicationUser?> GetUserAccountAsync(UserLoginModel userLogin) 
         {
             var identifyUser = await _userManager.FindByNameAsync(userLogin.Username);
 
@@ -87,15 +88,7 @@ namespace DLARS.Repositories
             {
                 var roles = await _userManager.GetRolesAsync(user);
 
-                result.Add(new UserReadModel
-                {
-                    UserCode = user.UserCode,
-                    LastName = user.LastName,
-                    FirstName = user.FirstName,
-                    Email = user.Email,                 
-                    Status = user.Status.ToString(),
-                    Role = roles.FirstOrDefault()
-                });
+                result.Add(UserReadModel.FromUser(user, roles));
             }
 
             return result;
@@ -125,16 +118,15 @@ namespace DLARS.Repositories
         }
 
 
-        public async Task<ApplicationUser?> GetByUserNameAsync(string username)
+        public async Task<bool> GetByUserNameAsync(string username)
         {
-            return await _userManager.Users
-                .FirstOrDefaultAsync(u => u.UserName == username);
+            return await _userManager.Users.AnyAsync(u => u.UserName == username);
         }
 
 
         public async Task<string?> GenerateResetPasswordTokenAsync(string email)
         {
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await GetUserByEmailAsync(email);
             if (user == null) return null;
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
@@ -142,17 +134,39 @@ namespace DLARS.Repositories
         }
 
 
-        public async Task<IdentityResult> ResetPasswordAsync(string email, string encodedToken, string newPassword)
+        public async Task<bool> ValidateResetPasswordTokenAsync(ResetTokenValidationModel resetModel)
         {
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await GetUserByEmailAsync(resetModel.Email);
             if (user == null)
-                return IdentityResult.Failed(new IdentityError { Description = "User not found." });
+                return false;
 
-            var token = WebUtility.UrlDecode(encodedToken);
-            return await _userManager.ResetPasswordAsync(user, token, newPassword);
+            var decodedToken = Uri.UnescapeDataString(resetModel.Token);
+
+            return await _userManager.VerifyUserTokenAsync(
+                         user,
+                         _userManager.Options.Tokens.PasswordResetTokenProvider,
+                         UserManager<ApplicationUser>.ResetPasswordTokenPurpose,
+                         decodedToken);
         }
 
 
+        public async Task<bool> ResetPasswordAsync(string email, string encodedToken, string newPassword)
+        {
+            var user = await GetUserByEmailAsync(email);
+            if (user == null)
+                return false;
+
+            var token = WebUtility.UrlDecode(encodedToken);
+            var  result =  await _userManager.ResetPasswordAsync(user, token, newPassword);
+
+            return result.Succeeded;
+        }
+
+
+        private async Task<ApplicationUser?> GetUserByEmailAsync(string email)
+        {
+            return await _userManager.FindByEmailAsync(email);
+        }
 
     }
 }

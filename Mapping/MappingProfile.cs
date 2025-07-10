@@ -15,6 +15,7 @@ namespace DLARS.Mappings
 
         public MappingProfile()
         {
+            //Request Entity 
             CreateMap<RequestEntity, RequestCreateModel>();
             CreateMap<RequestCreateModel, RequestEntity>();                       
             CreateMap<RequestEntity, RequestReadModel>();
@@ -30,17 +31,20 @@ namespace DLARS.Mappings
             CreateMap<RequestUpdateModel, RequestEntity>()
                 .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
 
-
+            //RequestHistory Entity 
             CreateMap<RequestHistoryCreateModel, RequestHistoryEntity>();
 
+            //Teacher Entity 
             CreateMap<TeacherCreateModel, TeacherEntity>();
             CreateMap<TeacherUpdateModel, TeacherEntity>();
             CreateMap<TeacherEntity, TeacherReadModel>();
 
+            //Subject Entity 
             CreateMap<SubjectCreateModel, SubjectEntity>();
             CreateMap<SubjectUpdateModel, SubjectEntity>();
             CreateMap<SubjectEntity, SubjectReadModel>();
 
+            //TeacherSubject Entity 
             CreateMap<TeacherSubjectsIdModel, TeacherSubjectEntity>();
            
         }

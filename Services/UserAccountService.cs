@@ -3,6 +3,7 @@ using DLARS.Models.Identity;
 using DLARS.Models.UserAccountModels;
 using DLARS.Repositories;
 using Microsoft.AspNetCore.Identity;
+using System.Net;
 
 
 namespace DLARS.Services
@@ -15,7 +16,8 @@ namespace DLARS.Services
         Task<Result> UpdateUserRoleAndStatusAsync(UserUpdateModel userUpdate);
         Task<bool> CheckUserExistenceAsync(string username);
         Task<string?> GenerateResetPasswordTokenAsync(string email);
-        Task<IdentityResult> ResetPasswordAsync(string email, string token, string newPassword);
+        Task<bool> ResetPasswordAsync(string email, string token, string newPassword);
+        Task<bool> ValidateResetTokenAsync(ResetTokenValidationModel resetToken);
 
     }
 
@@ -128,9 +130,9 @@ namespace DLARS.Services
         {
             try
             {
-                var user = await _userAccountRepository.GetByUserNameAsync(username);
+                bool userExist = await _userAccountRepository.GetByUserNameAsync(username);
 
-                if (user == null)
+                if (!userExist)
                 {
                     return false;
                 }
@@ -157,7 +159,7 @@ namespace DLARS.Services
             }
         }
 
-        public async Task<IdentityResult> ResetPasswordAsync(string email, string token, string newPassword)
+        public async Task<bool> ResetPasswordAsync(string email, string token, string newPassword)
         {
             try
             {
@@ -171,6 +173,18 @@ namespace DLARS.Services
         }
 
 
+        public async Task<bool> ValidateResetTokenAsync(ResetTokenValidationModel resetToken)
+        {
+            try 
+            {
+                return await _userAccountRepository.ValidateResetPasswordTokenAsync(resetToken);
+            } 
+            catch (Exception ex)
+            { 
+                _logger.LogError(ex, "Error occured while validating reset password token");
+                throw; 
+            }
+        }
 
 
     }

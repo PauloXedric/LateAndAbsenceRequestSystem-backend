@@ -73,7 +73,10 @@ namespace DLARS.Controllers
         [HttpPost("request-reset-password")]
         public async Task<IActionResult> RequestResetPassword([FromBody] ResetPasswordRequestModel resetPassword)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid) 
+            { 
+                return BadRequest(ModelState); 
+            }
 
             var token = await _userAccountService.GenerateResetPasswordTokenAsync(resetPassword.Username);
             if (token == null)
@@ -86,13 +89,30 @@ namespace DLARS.Controllers
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordModel resetPassword)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid) 
+            { 
+                return BadRequest(ModelState);
+            }
 
-            var result = await _userAccountService.ResetPasswordAsync(resetPassword.Email, resetPassword.Token, resetPassword.NewPassword);
-            if (result.Succeeded)
+            bool success = await _userAccountService.ResetPasswordAsync(resetPassword.Email, resetPassword.Token, resetPassword.NewPassword);
+            if (success)
                 return Ok(ApiResponse.SuccessMessage("Password has been reset successfully."));
 
-            return BadRequest(result.Errors);
+            return BadRequest(ApiResponse.FailMessage("Password reset failed."));
+        }
+
+
+        [HttpPost("validate-reset-token")]
+        public async Task<IActionResult> ValidateResetToken([FromBody] ResetTokenValidationModel resetToken)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            bool valid = await _userAccountService.ValidateResetTokenAsync(resetToken);
+
+            return Ok(valid);
         }
 
 
