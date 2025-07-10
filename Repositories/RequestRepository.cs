@@ -10,8 +10,6 @@ namespace DLARS.Repositories
     public interface IRequestRepository : IBaseRepository<RequestEntity>
     {
         IQueryable<RequestEntity> GetRequestByStatusId(RequestStatus statusId, string? filter);
-        Task<bool> UpdateRequestStatusAsync(int requestId, RequestStatus status);
-        Task<bool> AddImageInRequestAsync(AddImageUploadInRequestModel request);
         Task<bool> SubjectExistsInRequestAsync(string studentNumber, string subjectCode);
         Task<bool> GetSubmittedStatusByidAsync(int requestId);
     }
@@ -39,35 +37,6 @@ namespace DLARS.Repositories
             }
 
             return query.OrderBy(r => r.StatusId);
-        }
-
-  
-        public async Task<bool> UpdateRequestStatusAsync(int requestId, RequestStatus status) 
-        {
-            var result = await _dbContext.Request.FindAsync(requestId);
-            if (result == null) return false;
-
-            result.SetStatus(status);
-            await _dbContext.SaveChangesAsync();
-
-            return true;
-        }
-
-
-        public async Task<bool> AddImageInRequestAsync(AddImageUploadInRequestModel request) 
-        {
-            var result = await _dbContext.Request.FindAsync(request.RequestId);
-            if (result == null) return false;
-
-            
-            result.ProofImage = request.ProofImage;
-            result.ParentValidImage = request.ParentValidImage;
-            result.MedicalCertificate = request.MedicalCertificate;
-            result.SetStatus(request.StatusId);
-            result.Submitted = request.Submitted;
-            await _dbContext.SaveChangesAsync();
-
-            return true;
         }
 
 

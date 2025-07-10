@@ -90,9 +90,16 @@ namespace DLARS.Services
         {
             try
             {
-                return await _requestRepository.UpdateRequestStatusAsync(
-                    requestUpdate.RequestId,
-                    requestUpdate.StatusId);
+                var requestEntity = await _requestRepository.GetByIdAsync(requestUpdate.RequestId);
+                if (requestEntity == null) 
+                { 
+                    _logger.LogWarning("Request with id {RequestId} does not exist", requestUpdate.RequestId);
+                    return false;
+                }
+
+                _mapper.Map(requestUpdate, requestEntity);
+
+                return await _requestRepository.UpdateAsync(requestEntity);
             }
             catch (Exception ex)
             {
@@ -101,29 +108,33 @@ namespace DLARS.Services
             }
         }
 
-        public async Task<bool> AddImageInRequestAsync(AddImageReceivedInRequestModel imagedReceived)
+        public async Task<bool> AddImageInRequestAsync(AddImageReceivedInRequestModel imageReceived)
         {
             try
             {
-                var proofPath = _fileStorageService.SaveFile(imagedReceived.ProofImage, "imageproof");
-                var parentIdPath = _fileStorageService.SaveFile(imagedReceived.ParentValidImage, "parentvalidid");
-                var medCertPath = _fileStorageService.SaveFile(imagedReceived.MedicalCertificate, "medicalcertificate");
+                var proofPath = _fileStorageService.SaveFile(imageReceived.ProofImage, "imageproof");
+                var parentIdPath = _fileStorageService.SaveFile(imageReceived.ParentValidImage, "parentvalidid");
+                var medCertPath = _fileStorageService.SaveFile(imageReceived.MedicalCertificate! , "medicalcertificate");
 
-                var updatedModel = new AddImageUploadInRequestModel
+                var requestEntity = await _requestRepository.GetByIdAsync(imageReceived.RequestId);
+                if (requestEntity == null)
                 {
-                    RequestId = imagedReceived.RequestId,
-                    StatusId = imagedReceived.StatusId,
-                    ProofImage = proofPath,
-                    ParentValidImage = parentIdPath,
-                    MedicalCertificate = medCertPath,
-                    Submitted = imagedReceived.Submitted
-                };
-                
-                return await _requestRepository.AddImageInRequestAsync(updatedModel);
+                    _logger.LogWarning("Request with ID {RequestId} not found.", imageReceived.RequestId);
+                    return false;
+                }
+
+                var uploadModel = _mapper.Map<AddImageUploadInRequestModel>(imageReceived);
+                uploadModel.ProofImage = proofPath;
+                uploadModel.ParentValidImage = parentIdPath;
+                uploadModel.MedicalCertificate = medCertPath;
+
+                _mapper.Map(uploadModel, requestEntity);
+
+                return await _requestRepository.UpdateAsync(requestEntity);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while adding supporting documents in request with ID {ReqeustId}", imagedReceived.RequestId);
+                _logger.LogError(ex, "Error occurred while adding supporting documents in request with ID {ReqeustId}", imageReceived.RequestId);
                 throw;
             }
         }

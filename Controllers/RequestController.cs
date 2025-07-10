@@ -69,7 +69,7 @@ namespace DLARS.Controllers
         }
 
 
-        [HttpPut("update-status")]
+        [HttpPatch("update-status")]
         public async Task<IActionResult> UpdateRequestStatus([FromBody] RequestUpdateModel requestUpdate)
         {
             if (!ModelState.IsValid)
@@ -83,7 +83,7 @@ namespace DLARS.Controllers
         }
 
 
-        [HttpPut("add-image-proof")]
+        [HttpPatch("add-image-proof")]
         public async Task<IActionResult> AddImageProofInRequest([FromForm] AddImageReceivedInRequestModel imageRequest)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);

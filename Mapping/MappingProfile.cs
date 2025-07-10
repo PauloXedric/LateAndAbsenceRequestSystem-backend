@@ -17,8 +17,20 @@ namespace DLARS.Mappings
         {
             CreateMap<RequestEntity, RequestCreateModel>();
             CreateMap<RequestCreateModel, RequestEntity>();                       
-            CreateMap<RequestEntity, RequestReadModel>();     
-            
+            CreateMap<RequestEntity, RequestReadModel>();
+
+            CreateMap<AddImageReceivedInRequestModel, AddImageUploadInRequestModel>()
+               .ForMember(dest => dest.ProofImage, opt => opt.Ignore())
+               .ForMember(dest => dest.ParentValidImage, opt => opt.Ignore())
+               .ForMember(dest => dest.MedicalCertificate, opt => opt.Ignore());
+
+            CreateMap<AddImageUploadInRequestModel, RequestEntity>()
+                .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
+
+            CreateMap<RequestUpdateModel, RequestEntity>()
+                .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
+
+
             CreateMap<RequestHistoryCreateModel, RequestHistoryEntity>();
 
             CreateMap<TeacherCreateModel, TeacherEntity>();
