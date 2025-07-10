@@ -88,6 +88,9 @@ namespace DLARS.Repositories
             {
                 var roles = await _userManager.GetRolesAsync(user);
 
+                if (roles.Contains(UserRole.Developer.ToString()))
+                    continue;
+
                 result.Add(UserReadModel.FromUser(user, roles));
             }
 
@@ -157,6 +160,7 @@ namespace DLARS.Repositories
                 return false;
 
             var token = WebUtility.UrlDecode(encodedToken);
+            token = token.Replace(" ", "+");
             var  result =  await _userManager.ResetPasswordAsync(user, token, newPassword);
 
             return result.Succeeded;

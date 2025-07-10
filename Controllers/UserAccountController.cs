@@ -86,6 +86,20 @@ namespace DLARS.Controllers
         }
 
 
+        [HttpPost("validate-reset-token")]
+        public async Task<IActionResult> ValidateResetToken([FromBody] ResetTokenValidationModel resetToken)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            bool valid = await _userAccountService.ValidateResetTokenAsync(resetToken);
+
+            return Ok(valid);
+        }
+
+
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordModel resetPassword)
         {
@@ -99,20 +113,6 @@ namespace DLARS.Controllers
                 return Ok(ApiResponse.SuccessMessage("Password has been reset successfully."));
 
             return BadRequest(ApiResponse.FailMessage("Password reset failed."));
-        }
-
-
-        [HttpPost("validate-reset-token")]
-        public async Task<IActionResult> ValidateResetToken([FromBody] ResetTokenValidationModel resetToken)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            bool valid = await _userAccountService.ValidateResetTokenAsync(resetToken);
-
-            return Ok(valid);
         }
 
 
@@ -136,7 +136,7 @@ namespace DLARS.Controllers
 
 
         [HttpPut]
-        public async Task<IActionResult> UserUpdate([FromBody] UserUpdateModel userUpdate)
+        public async Task<IActionResult> UpdateUserStatusAndRole([FromBody] UserUpdateModel userUpdate)
         {
             if (!ModelState.IsValid)
             {

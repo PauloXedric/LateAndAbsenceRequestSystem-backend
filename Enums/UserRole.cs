@@ -4,6 +4,7 @@
     {
         Secretary,
         Chairperson,
-        Director
+        Director,
+        Developer
     }
 }
