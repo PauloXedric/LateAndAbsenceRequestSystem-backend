@@ -9,10 +9,10 @@ namespace DLARS.Models.Requests
         public int RequestId { get; set; }
 
         [Required]
-        public IFormFile ProofImage { get; set; }
+        public required IFormFile ProofImage { get; set; }
 
         [Required]
-        public IFormFile ParentValidImage { get; set; }
+        public required IFormFile ParentValidImage { get; set; }
 
         public IFormFile? MedicalCertificate { get; set; }
 

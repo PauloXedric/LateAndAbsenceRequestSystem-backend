@@ -6,7 +6,7 @@ namespace DLARS.Models.UserAccountModels
     public class UserUpdateModel
     {
         [Required]
-        public string UserCode { get; set; } 
+        public required string UserCode { get; set; } 
 
         [Required]
         public UserRole Role { get; set; }

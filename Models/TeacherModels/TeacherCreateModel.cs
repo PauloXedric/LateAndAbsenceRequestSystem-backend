@@ -5,9 +5,9 @@ namespace DLARS.Models.TeacherModels
     public class TeacherCreateModel
     {
         [Required]
-        public string TeacherCode { get; set; } 
+        public required string TeacherCode { get; set; } 
 
         [Required]
-        public string TeacherName { get; set; } 
+        public required string TeacherName { get; set; } 
     }
 }

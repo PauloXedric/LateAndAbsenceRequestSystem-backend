@@ -6,7 +6,7 @@ namespace DLARS.Models.UserAccountModels
     {
         [Required]
         [EmailAddress]
-        public string Username { get; set; }
+        public required string Username { get; set; }
 
     }
 }

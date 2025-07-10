@@ -6,7 +6,11 @@ namespace DLARS.Models.SubjectModels
     {
         [Required]
         public int SubjectId { get; set; }
-        public string SubjectCode { get; set; }
-        public string SubjectName { get; set; }
+
+        [Required]
+        public  required string SubjectCode { get; set; }
+
+        [Required]
+        public required string SubjectName { get; set; } 
     }
 }

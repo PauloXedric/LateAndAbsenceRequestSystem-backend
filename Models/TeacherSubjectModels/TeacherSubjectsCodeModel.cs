@@ -6,7 +6,7 @@ namespace DLARS.Models.TeacherSubjectModels
     {
 
         [Required]
-        public string TeacherCode { get; set; }
+        public required  string TeacherCode { get; set; }
 
         [Required]
         public List<string> SubjectCode { get; set; } = new();

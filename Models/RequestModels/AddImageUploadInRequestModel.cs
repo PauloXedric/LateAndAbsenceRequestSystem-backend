@@ -12,10 +12,10 @@ namespace DLARS.Models.Requests
         public RequestStatus StatusId { get; set; }
 
         [Required]
-        public string ProofImage { get; set; }
+        public required string ProofImage { get; set; }
 
         [Required]
-        public string ParentValidImage { get; set; }
+        public required string ParentValidImage { get; set; }
 
         public string? MedicalCertificate { get; set; }
 
