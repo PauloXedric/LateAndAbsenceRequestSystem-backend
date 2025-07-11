@@ -21,6 +21,7 @@ namespace DLARS.Repositories
         Task<string?> GenerateResetPasswordTokenAsync(string email);
         Task<bool> ValidateResetPasswordTokenAsync(ResetTokenValidationModel resetModel);
         Task<bool> ResetPasswordAsync(string email, string encodedToken, string newPassword);
+        Task<bool> DeleteUserAsync(string userAccount);
 
     }
 
@@ -163,6 +164,15 @@ namespace DLARS.Repositories
             token = token.Replace(" ", "+");
             var  result =  await _userManager.ResetPasswordAsync(user, token, newPassword);
 
+            return result.Succeeded;
+        }
+
+        public async Task<bool> DeleteUserAsync(string userAccount)
+        {
+            var user = await GetUserByEmailAsync(userAccount);
+            if (user == null) return false;
+
+            var result = await _userManager.DeleteAsync(user);
             return result.Succeeded;
         }
 

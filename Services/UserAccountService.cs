@@ -18,6 +18,7 @@ namespace DLARS.Services
         Task<string?> GenerateResetPasswordTokenAsync(string email);
         Task<bool> ResetPasswordAsync(string email, string token, string newPassword);
         Task<bool> ValidateResetTokenAsync(ResetTokenValidationModel resetToken);
+        Task<Result> DeleteAccountByEmailAsync(string email);
 
     }
 
@@ -185,6 +186,28 @@ namespace DLARS.Services
                 throw; 
             }
         }
+
+
+        public async Task<Result> DeleteAccountByEmailAsync(string email)
+        {
+            try
+            {
+                var deleted = await _userAccountRepository.DeleteUserAsync(email);
+
+                if (deleted == false)
+                {
+                    return Result.Failed;
+                }
+
+                return Result.Success;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while deleting user account {}", email);
+                throw;
+            }
+        }
+
 
 
     }

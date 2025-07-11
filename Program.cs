@@ -13,6 +13,7 @@ using System.Text;
 using DLARS.Middlewares;
 using OpenApiSecurityScheme = Microsoft.OpenApi.Models.OpenApiSecurityScheme;
 using System.Text.Json.Serialization;
+using DLARS.Hubs;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -83,7 +84,8 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins("http://localhost:4200")
               .AllowAnyHeader()
-              .AllowAnyMethod();
+              .AllowAnyMethod()
+              .AllowCredentials();
     });
 });
 
@@ -92,6 +94,7 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddControllers().AddJsonOptions(opt => {
     opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
+builder.Services.AddSignalR();
 
 
 builder.Services.AddEndpointsApiExplorer();
@@ -163,6 +166,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapControllers();
+app.MapHub<RequestHub>("api/hubs/request");
 
 
 app.Run();

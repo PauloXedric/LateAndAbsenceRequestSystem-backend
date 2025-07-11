@@ -25,7 +25,7 @@ namespace DLARS.Controllers
 
 
         [HttpPost("register-user")]
-        public async Task<IActionResult> RegisterUser([FromBody]UserRegisterModel userAccount)
+        public async Task<IActionResult> RegisterUser([FromBody] UserRegisterModel userAccount)
         {
             if (!ModelState.IsValid)
             {
@@ -34,7 +34,7 @@ namespace DLARS.Controllers
 
             var result = await _userAccountService.RegisterAccountAsync(userAccount);
 
-            if (result.Succeeded) 
+            if (result.Succeeded)
             {
                 return Ok(ApiResponse.SuccessMessage("Sucessfully register, Please wait for account activation"));
             }
@@ -73,9 +73,9 @@ namespace DLARS.Controllers
         [HttpPost("request-reset-password")]
         public async Task<IActionResult> RequestResetPassword([FromBody] ResetPasswordRequestModel resetPassword)
         {
-            if (!ModelState.IsValid) 
-            { 
-                return BadRequest(ModelState); 
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
             }
 
             var token = await _userAccountService.GenerateResetPasswordTokenAsync(resetPassword.Username);
@@ -103,8 +103,8 @@ namespace DLARS.Controllers
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordModel resetPassword)
         {
-            if (!ModelState.IsValid) 
-            { 
+            if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
             }
 
@@ -131,7 +131,7 @@ namespace DLARS.Controllers
                 return BadRequest("Username cannot be empty.");
 
             var userExist = await _userAccountService.CheckUserExistenceAsync(username);
-            return Ok(userExist);   
+            return Ok(userExist);
         }
 
 
@@ -153,8 +153,25 @@ namespace DLARS.Controllers
                 _ => StatusCode(500, ApiResponse.FailMessage("Unexpected result."))
             };
         }
-        
 
+
+        [HttpDelete("{email}")]
+        public async Task<IActionResult> DeleteUser([FromRoute] string email)
+        {
+            if (string.IsNullOrWhiteSpace(email)) 
+            { 
+                return BadRequest("Email must be provided."); 
+            }
+
+            var result = await _userAccountService.DeleteAccountByEmailAsync(email);
+
+            return result switch
+            {
+                Result.Success => Ok(ApiResponse.SuccessMessage("User deleted permanently.")),         
+                Result.Failed => StatusCode(500, ApiResponse.FailMessage("Failed to delete user account.")),
+                _ => StatusCode(500, ApiResponse.FailMessage("Unexpected result."))
+            };
+        }
 
     }
 }

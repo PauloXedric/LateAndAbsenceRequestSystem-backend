@@ -2,9 +2,11 @@
 using AutoMapper.QueryableExtensions;
 using DLARS.Entities;
 using DLARS.Enums;
+using DLARS.Hubs;
 using DLARS.Models.Pagination;
 using DLARS.Models.Requests;
 using DLARS.Repositories;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace DLARS.Services
@@ -25,16 +27,21 @@ namespace DLARS.Services
         private readonly IMapper _mapper;
         private readonly IRequestRepository _requestRepository;
         private readonly IFileStorageService _fileStorageService;
+        private readonly IHubContext<RequestHub> _hubContext;
         private readonly ILogger<RequestService> _logger;
        
 
         public RequestService(IMapper mapping, IRequestRepository requestRepository, 
-                              IFileStorageService fileStorageService, ILogger<RequestService> logger)
+                              IFileStorageService fileStorageService, IHubContext<RequestHub> hubContext,
+                              ILogger<RequestService> logger)
+                             
         {
             _mapper = mapping;
             _requestRepository = requestRepository;
             _fileStorageService = fileStorageService;
+            _hubContext = hubContext;
             _logger = logger;
+           
         }
 
 
@@ -52,7 +59,19 @@ namespace DLARS.Services
                 
                 var result = await _requestRepository.AddAsync(requestEntity);
 
-                return result > 0 ? Result.Success : Result.Failed;
+               if (result > 0)
+               {
+                 var readModel = _mapper.Map<RequestReadModel>(requestEntity);
+                
+                 await _hubContext
+                     .Clients
+                     .Group($"status-{Enum.GetName(typeof(RequestStatus), requestEntity.StatusId)}")
+                     .SendAsync("NewRequestReceived", readModel);
+
+                  return Result.Success;
+               }
+
+                  return Result.Failed;
             }
             catch (Exception ex)
             {
@@ -99,7 +118,17 @@ namespace DLARS.Services
 
                 _mapper.Map(requestUpdate, requestEntity);
 
-                return await _requestRepository.UpdateAsync(requestEntity);
+                var updated =  await _requestRepository.UpdateAsync(requestEntity);
+
+                if (updated)
+                {
+                    var readModel = _mapper.Map<RequestReadModel>(requestEntity);
+                    await _hubContext
+                        .Clients
+                        .Group($"status-{Enum.GetName(typeof(RequestStatus), requestEntity.StatusId)}")
+                        .SendAsync("NewRequestReceived", readModel);
+                }
+                return updated;
             }
             catch (Exception ex)
             {
@@ -130,7 +159,17 @@ namespace DLARS.Services
 
                 _mapper.Map(uploadModel, requestEntity);
 
-                return await _requestRepository.UpdateAsync(requestEntity);
+                var updated =  await _requestRepository.UpdateAsync(requestEntity);
+
+                if (updated)
+                {
+                    var readModel = _mapper.Map<RequestReadModel>(requestEntity);
+                    await _hubContext
+                        .Clients
+                        .Group($"status-{Enum.GetName(typeof(RequestStatus), requestEntity.StatusId)}")
+                        .SendAsync("NewRequestReceived", readModel);
+                }
+                return updated;
             }
             catch (Exception ex)
             {
