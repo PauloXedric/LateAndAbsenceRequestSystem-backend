@@ -1,7 +1,6 @@
 ﻿using DLARS.Models.Identity;
 using DLARS.Models.UrlTokenModels;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -9,6 +8,7 @@ using System.Text;
 
 namespace DLARS.Services
 {
+
     public interface ITokenService 
     {
         string GenerateUrlToken(RequestGenTokenModel request);
@@ -35,7 +35,6 @@ namespace DLARS.Services
         {
             try
             {
-
                 var roles = await _userManager.GetRolesAsync(identityUser);
 
                 var claims = new List<Claim>
@@ -125,6 +124,8 @@ namespace DLARS.Services
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+
 
     }
 }

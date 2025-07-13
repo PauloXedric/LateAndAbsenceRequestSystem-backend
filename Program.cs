@@ -14,6 +14,8 @@ using DLARS.Middlewares;
 using OpenApiSecurityScheme = Microsoft.OpenApi.Models.OpenApiSecurityScheme;
 using System.Text.Json.Serialization;
 using DLARS.Hubs;
+using DLARS.HangfireJobs;
+using Hangfire;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +27,7 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
 
     containerBuilder.RegisterModule(new ServiceModule());
     containerBuilder.RegisterModule(new RepositoryModule());
+    containerBuilder.RegisterModule(new HangfireJobModule());
 });
 
 
@@ -43,15 +46,18 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     options.Password.RequiredLength = 8;
 }).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
 
+
 builder.Services.Configure<DataProtectionTokenProviderOptions>(opt =>
 {
     opt.TokenLifespan = TimeSpan.FromMinutes(30);
 });
 
+
 builder.Services.Configure<PasswordHasherOptions>(options =>
 {
     options.CompatibilityMode = PasswordHasherCompatibilityMode.IdentityV3;
 });
+
 
 builder.Services.AddAuthentication(options =>
 {
@@ -94,7 +100,16 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddControllers().AddJsonOptions(opt => {
     opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
+
+
 builder.Services.AddSignalR();
+
+
+builder.Services.AddHangfire(config =>
+{
+    config.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnectionString"));
+});
+builder.Services.AddHangfireServer();
 
 
 builder.Services.AddEndpointsApiExplorer();
@@ -126,6 +141,9 @@ builder.Services.AddSwaggerGen(options =>
             new string[] {}
         }
     });
+    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    options.IncludeXmlComments(xmlPath);
 });
 
 
@@ -154,6 +172,17 @@ app.UseCors("AllowAngularApp");
 
 app.UseAuthentication();
 app.UseAuthorization();
+using (var scope = app.Services.CreateScope())
+{
+    var recurringJobManager = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
+    var notificationJob = scope.ServiceProvider.GetRequiredService<INotificationJob>();
+
+    recurringJobManager.AddOrUpdate<INotificationJob>(
+        "NotifyPendingRequests",
+        job => job.NotifyPendingRequestsAsync(),
+       "0 */8 * * *"
+    );
+}
 
 
 if (app.Environment.IsDevelopment())

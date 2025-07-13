@@ -6,7 +6,9 @@ namespace DLARS.Models.UrlTokenModels
     {
         [Required]
         public required string UserEmail { get; set; }
+
         [Required]
         public required string UserRole { get; set; } 
     }
+
 }

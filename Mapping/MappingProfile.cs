@@ -6,7 +6,6 @@ using DLARS.Models.SubjectModel;
 using DLARS.Models.SubjectModels;
 using DLARS.Models.TeacherModels;
 using DLARS.Models.TeacherSubjectModels;
-using DLARS.Views;
 
 namespace DLARS.Mappings
 {

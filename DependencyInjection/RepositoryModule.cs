@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using DLARS.Repositories;
-using DLARS.Services;
 
 namespace DLARS.DependencyInjection
 {
@@ -16,5 +15,6 @@ namespace DLARS.DependencyInjection
             builder.RegisterType<TeacherSubjectsRepository>().As<ITeacherSubjectsRepository>().InstancePerLifetimeScope();
 
         }
+
     }
 }

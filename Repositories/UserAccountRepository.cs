@@ -22,7 +22,6 @@ namespace DLARS.Repositories
         Task<bool> ValidateResetPasswordTokenAsync(ResetTokenValidationModel resetModel);
         Task<bool> ResetPasswordAsync(string email, string encodedToken, string newPassword);
         Task<bool> DeleteUserAsync(string userAccount);
-
     }
 
 
@@ -167,6 +166,7 @@ namespace DLARS.Repositories
             return result.Succeeded;
         }
 
+
         public async Task<bool> DeleteUserAsync(string userAccount)
         {
             var user = await GetUserByEmailAsync(userAccount);
@@ -181,6 +181,8 @@ namespace DLARS.Repositories
         {
             return await _userManager.FindByEmailAsync(email);
         }
+
+
 
     }
 }

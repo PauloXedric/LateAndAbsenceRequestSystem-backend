@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using DLARS.Constants;
 using DLARS.Entities;
 using DLARS.Enums;
+using DLARS.Helpers;
 using DLARS.Hubs;
 using DLARS.Models.Pagination;
 using DLARS.Models.Requests;
@@ -29,19 +31,16 @@ namespace DLARS.Services
         private readonly IFileStorageService _fileStorageService;
         private readonly IHubContext<RequestHub> _hubContext;
         private readonly ILogger<RequestService> _logger;
-       
 
         public RequestService(IMapper mapping, IRequestRepository requestRepository, 
                               IFileStorageService fileStorageService, IHubContext<RequestHub> hubContext,
-                              ILogger<RequestService> logger)
-                             
+                              ILogger<RequestService> logger)                             
         {
             _mapper = mapping;
             _requestRepository = requestRepository;
             _fileStorageService = fileStorageService;
             _hubContext = hubContext;
-            _logger = logger;
-           
+            _logger = logger;          
         }
 
 
@@ -56,6 +55,8 @@ namespace DLARS.Services
                     return Result.AlreadyExist;
                 }
                 var requestEntity = _mapper.Map<RequestEntity>(request);
+
+                AuditHelper.SetCreatedAndModified(requestEntity);
                 
                 var result = await _requestRepository.AddAsync(requestEntity);
 
@@ -66,7 +67,7 @@ namespace DLARS.Services
                  await _hubContext
                      .Clients
                      .Group($"status-{Enum.GetName(typeof(RequestStatus), requestEntity.StatusId)}")
-                     .SendAsync("NewRequestReceived", readModel);
+                     .SendAsync(SignalREvents.NewRequestReceived, readModel);
 
                   return Result.Success;
                }
@@ -118,6 +119,8 @@ namespace DLARS.Services
 
                 _mapper.Map(requestUpdate, requestEntity);
 
+                AuditHelper.SetModified(requestEntity);
+
                 var updated =  await _requestRepository.UpdateAsync(requestEntity);
 
                 if (updated)
@@ -126,8 +129,9 @@ namespace DLARS.Services
                     await _hubContext
                         .Clients
                         .Group($"status-{Enum.GetName(typeof(RequestStatus), requestEntity.StatusId)}")
-                        .SendAsync("NewRequestReceived", readModel);
+                        .SendAsync(SignalREvents.NewRequestReceived, readModel);
                 }
+
                 return updated;
             }
             catch (Exception ex)
@@ -136,6 +140,7 @@ namespace DLARS.Services
                 throw;
             }
         }
+
 
         public async Task<bool> AddImageInRequestAsync(AddImageReceivedInRequestModel imageReceived)
         {
@@ -159,6 +164,8 @@ namespace DLARS.Services
 
                 _mapper.Map(uploadModel, requestEntity);
 
+                AuditHelper.SetModified(requestEntity);
+
                 var updated =  await _requestRepository.UpdateAsync(requestEntity);
 
                 if (updated)
@@ -167,8 +174,9 @@ namespace DLARS.Services
                     await _hubContext
                         .Clients
                         .Group($"status-{Enum.GetName(typeof(RequestStatus), requestEntity.StatusId)}")
-                        .SendAsync("NewRequestReceived", readModel);
+                        .SendAsync(SignalREvents.NewRequestReceived, readModel);
                 }
+
                 return updated;
             }
             catch (Exception ex)
@@ -192,5 +200,6 @@ namespace DLARS.Services
             }
         }
    
+
     }
 }

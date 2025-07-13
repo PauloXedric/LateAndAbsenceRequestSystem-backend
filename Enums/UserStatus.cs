@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.Design;
-
-namespace DLARS.Enums
+﻿namespace DLARS.Enums
 {
     public enum UserStatus
     {

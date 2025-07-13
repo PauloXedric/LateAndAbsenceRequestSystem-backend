@@ -1,11 +1,11 @@
-﻿
-
-namespace DLARS.Services
+﻿namespace DLARS.Services
 {
+
     public interface IFileStorageService 
     {
       string SaveFile(IFormFile file, string folderName);
     }
+
 
     public class FileStorageService : IFileStorageService
     {
@@ -17,6 +17,7 @@ namespace DLARS.Services
             _webHostEnvironment = webHostEnvironment;
             _logger = logger;
         }
+
 
         public string SaveFile(IFormFile file, string folderName)
         {
@@ -45,6 +46,8 @@ namespace DLARS.Services
                 throw;
             }
         }
+
+
 
     }
 }

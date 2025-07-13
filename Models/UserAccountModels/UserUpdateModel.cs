@@ -14,4 +14,5 @@ namespace DLARS.Models.UserAccountModels
         [Required]
         public UserStatus Status { get; set; } 
     }
+
 }

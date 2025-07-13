@@ -12,4 +12,5 @@ namespace DLARS.Entities
         public RequestResult ResultId { get; set; }
         public string PerformedByUserId { get; set; }
     }
+
 }

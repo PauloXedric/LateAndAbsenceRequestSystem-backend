@@ -31,6 +31,7 @@ namespace DLARS.Repositories
             return await _dbContext.TeacherAssignedSubjects.ToListAsync();
         }
 
+
         public async Task<bool> GetSubjectAndTeacherByIdAsync(int teacherId, int subjectId)
         {
             return await  _dbContext.TeacherSubject
@@ -52,6 +53,7 @@ namespace DLARS.Repositories
             _dbContext.TeacherSubject.RemoveRange(existing);
             await _dbContext.SaveChangesAsync();
         }
+
 
     }
 }

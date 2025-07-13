@@ -11,4 +11,5 @@ namespace DLARS.Models.TeacherSubjectModels
         [Required]
         public List<string> SubjectCode { get; set; } = new();
     }
+
 }

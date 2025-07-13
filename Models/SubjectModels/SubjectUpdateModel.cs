@@ -13,4 +13,5 @@ namespace DLARS.Models.SubjectModels
         [Required]
         public required string SubjectName { get; set; } 
     }
+
 }

@@ -1,7 +1,9 @@
-﻿using DLARS.Enums;
+﻿using DLARS.Constants;
+using DLARS.Enums;
 using DLARS.Helpers;
 using DLARS.Models.UserAccountModels;
 using DLARS.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -15,7 +17,6 @@ namespace DLARS.Controllers
         private readonly IUserAccountService _userAccountService;
         private readonly ITokenService _tokenService;
 
-
         public UserAccountController(IUserAccountService userAccountService, ITokenService tokenService)
         {
             _userAccountService = userAccountService;
@@ -23,7 +24,13 @@ namespace DLARS.Controllers
         }
 
 
-
+        /// <summary>
+        /// Registers a new user account.
+        /// </summary>
+        /// <remarks>
+        /// Used for registering users through a director-sent invitation link send via email.
+        /// The account will remain inactive until activate by the Director.
+        /// </remarks>
         [HttpPost("register-user")]
         public async Task<IActionResult> RegisterUser([FromBody] UserRegisterModel userAccount)
         {
@@ -43,7 +50,12 @@ namespace DLARS.Controllers
         }
 
 
-
+        /// <summary>
+        /// Authenticates a user and generates a JWT token.
+        /// </summary>
+        /// <remarks>
+        /// Only admins / invited through the director-sent invitation link can log-in.
+        /// </remarks>
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserLoginModel userLogin)
         {
@@ -70,6 +82,12 @@ namespace DLARS.Controllers
         }
 
 
+        /// <summary>
+        /// Generates a password reset token for the admins.
+        /// </summary>
+        /// <remarks>
+        /// Returns a secure token that can be used to reset the password. The token is time-limited.
+        /// </remarks>
         [HttpPost("request-reset-password")]
         public async Task<IActionResult> RequestResetPassword([FromBody] ResetPasswordRequestModel resetPassword)
         {
@@ -86,6 +104,12 @@ namespace DLARS.Controllers
         }
 
 
+        /// <summary>
+        /// Validates the provided password reset token by the identity core.
+        /// </summary>
+        /// <remarks>
+        /// Ensures the token is still valid and associated with the provided username.
+        /// </remarks>
         [HttpPost("validate-reset-token")]
         public async Task<IActionResult> ValidateResetToken([FromBody] ResetTokenValidationModel resetToken)
         {
@@ -100,6 +124,12 @@ namespace DLARS.Controllers
         }
 
 
+        /// <summary>
+        /// Resets the user's password using a valid reset token.
+        /// </summary>
+        /// <remarks>
+        /// Updates the user's password if the token is valid and not expired.
+        /// </remarks>
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordModel resetPassword)
         {
@@ -116,6 +146,13 @@ namespace DLARS.Controllers
         }
 
 
+        /// <summary>
+        /// Retrieves all registered users and their roles.
+        /// </summary>
+        /// <remarks>
+        /// Used by the director to manage admins in the system.
+        /// </remarks>
+        [Authorize(Roles = UserRoleConstant.Director)]
         [HttpGet("all")]
         public async Task<ActionResult<List<UserReadModel>>> GetAllUsers()
         {
@@ -124,6 +161,12 @@ namespace DLARS.Controllers
         }
 
 
+        /// <summary>
+        /// Checks if a user exists by their username or email.
+        /// </summary>
+        /// <remarks>
+        /// Used in this system to check whether the account already exist or not.
+        /// </remarks>
         [HttpGet("check-user/{username}")]
         public async Task<ActionResult<bool>> CheckUserAsync([FromRoute] string username)
         {
@@ -135,6 +178,13 @@ namespace DLARS.Controllers
         }
 
 
+        /// <summary>
+        /// Updates a user's role and account status.
+        /// </summary>
+        /// <remarks>
+        /// Can be used to activate or deactivate a user, and assign roles like Secretary, Chairperson, or Director.
+        /// </remarks>
+        [Authorize(Roles = UserRoleConstant.Director)]
         [HttpPut]
         public async Task<IActionResult> UpdateUserStatusAndRole([FromBody] UserUpdateModel userUpdate)
         {
@@ -155,6 +205,13 @@ namespace DLARS.Controllers
         }
 
 
+        /// <summary>
+        /// Permanently deletes a user account by email.
+        /// </summary>
+        /// <remarks>
+        /// Upon deletion. this removes all traces of the user from the system.
+        /// </remarks>
+        [Authorize(Roles = UserRoleConstant.Director)]
         [HttpDelete("{email}")]
         public async Task<IActionResult> DeleteUser([FromRoute] string email)
         {

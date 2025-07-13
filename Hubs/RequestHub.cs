@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using DLARS.Constants;
+using Microsoft.AspNetCore.SignalR;
 
 namespace DLARS.Hubs
 {
@@ -15,5 +16,11 @@ namespace DLARS.Hubs
             string groupName = $"status-{statusId}";
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
         }
+
+        public async Task BroadcastHangfireTriggered()
+        {
+            await Clients.All.SendAsync(SignalREvents.HangfireTriggered);
+        }
+
     }
 }

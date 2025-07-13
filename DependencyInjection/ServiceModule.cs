@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using DLARS.Repositories;
 using DLARS.Services;
 
 
@@ -7,7 +6,6 @@ namespace DLARS.DependencyInjection
 {
     public class ServiceModule : Autofac.Module
     {
-
         protected override void Load(ContainerBuilder builder) 
         {
             builder.RegisterType<RequestService>().As<IRequestService>().InstancePerLifetimeScope();
@@ -18,8 +16,9 @@ namespace DLARS.DependencyInjection
             builder.RegisterType<TeacherSubjectsService>().As<ITeacherSubjectsService>().InstancePerLifetimeScope();
             builder.RegisterType<TokenService>().As<ITokenService>().InstancePerLifetimeScope();
             builder.RegisterType<FileStorageService>().As<IFileStorageService>().InstancePerLifetimeScope();
-        }
+            builder.RegisterType<SendGridEmailService>().As<ISendGridEmailService>().InstancePerLifetimeScope();
 
+        }
 
     }
 }

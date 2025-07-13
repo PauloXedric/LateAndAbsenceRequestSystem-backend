@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using DLARS.Controllers;
 using DLARS.Entities;
 using DLARS.Enums;
 using DLARS.Models.TeacherSubjectModels;
@@ -8,6 +7,7 @@ using DLARS.Views;
 
 namespace DLARS.Services
 {
+
     public interface ITeacherSubjectsService
     {
         Task<Result> RegisterSubjectsToTeacher(TeacherSubjectsCodeModel teacherSubjectsCode);
@@ -24,7 +24,6 @@ namespace DLARS.Services
         private readonly ISubjectRepository _subjectRepository;
         private readonly ILogger<TeacherSubjectsService> _logger;
 
-
         public TeacherSubjectsService(IMapper mapper, ITeacherSubjectsRepository teacherSubjectsRepository,
                                       ITeacherRepository teacherRepository, ISubjectRepository subjectRepository, 
                                       ILogger<TeacherSubjectsService> logger)
@@ -35,7 +34,6 @@ namespace DLARS.Services
             _subjectRepository = subjectRepository;
             _logger = logger;
         }
-
 
 
         public async Task<Result> RegisterSubjectsToTeacher(TeacherSubjectsCodeModel teacherSubjectsCode)
@@ -64,7 +62,6 @@ namespace DLARS.Services
                 }
 
                 return deleted ? Result.Updated : Result.Success;
-
             }
             catch (Exception ex)
             {
@@ -86,7 +83,6 @@ namespace DLARS.Services
         }
 
 
-
         public async Task<List<TeacherAssignedSubjectsModelView>> GetAllListAsync()
         {
             try
@@ -99,7 +95,6 @@ namespace DLARS.Services
                 throw;
             }
         }
-
 
 
         public async Task<Result> DeleteTeacherWithSubjectsAssignedAsync(int teacherId)
@@ -121,6 +116,8 @@ namespace DLARS.Services
                 throw;
             }
         }
+
+
 
     }
 }

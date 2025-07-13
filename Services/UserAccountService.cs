@@ -3,11 +3,10 @@ using DLARS.Models.Identity;
 using DLARS.Models.UserAccountModels;
 using DLARS.Repositories;
 using Microsoft.AspNetCore.Identity;
-using System.Net;
-
 
 namespace DLARS.Services
 {
+
     public interface IUserAccountService 
     {
         Task<IdentityResult> RegisterAccountAsync(UserRegisterModel userAccount);
@@ -19,9 +18,7 @@ namespace DLARS.Services
         Task<bool> ResetPasswordAsync(string email, string token, string newPassword);
         Task<bool> ValidateResetTokenAsync(ResetTokenValidationModel resetToken);
         Task<Result> DeleteAccountByEmailAsync(string email);
-
     }
-
 
 
     public class UserAccountService : IUserAccountService
@@ -29,7 +26,6 @@ namespace DLARS.Services
         private readonly IUserAccountRepository _userAccountRepository;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<UserAccountService> _logger;
-
 
         public UserAccountService(IUserAccountRepository userAccountRepository, UserManager<ApplicationUser> userManager,
                                    ILogger<UserAccountService> logger)
@@ -39,7 +35,6 @@ namespace DLARS.Services
             _logger = logger;
         }
         
-
 
         public async Task<IdentityResult> RegisterAccountAsync(UserRegisterModel userAccount) 
         {
@@ -87,7 +82,6 @@ namespace DLARS.Services
             try
             {
                 return await _userAccountRepository.GetAllUserWithRoleAsync();
-
             }
             catch (Exception ex)
             {
@@ -117,7 +111,6 @@ namespace DLARS.Services
                 }
 
                 return Result.Success;
-
             }
             catch (Exception ex) 
             {
@@ -147,6 +140,7 @@ namespace DLARS.Services
             }
         }
 
+
         public async Task<string?> GenerateResetPasswordTokenAsync(string email)
         {
             try
@@ -159,6 +153,7 @@ namespace DLARS.Services
                 throw;
             }
         }
+
 
         public async Task<bool> ResetPasswordAsync(string email, string token, string newPassword)
         {

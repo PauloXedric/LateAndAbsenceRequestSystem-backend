@@ -15,6 +15,7 @@ namespace DLARS.Services
         Task<Result> DeleteTeacherAsync(int teacherId);
     }
 
+
     public class TeacherService : ITeacherService   
     {
         private readonly IMapper _mapper;
@@ -50,7 +51,6 @@ namespace DLARS.Services
                 var result =  await _teacherRepository.AddAsync(teacherEntity);
 
                 return result > 0 ? Result.Success : Result.Failed;
-
             }
             catch (Exception ex)
             {
@@ -93,6 +93,7 @@ namespace DLARS.Services
                 _mapper.Map(updateTeacher, existingTeacher);
         
                 await _teacherRepository.UpdateAsync(existingTeacher);
+
                 return Result.Success;
             }
             catch (Exception ex) 
@@ -107,7 +108,6 @@ namespace DLARS.Services
         {
             try
             {
-       
                 var result = await _teacherRepository.DeleteAsync(teacherId);
                 if (result == false)
                 {
@@ -123,9 +123,9 @@ namespace DLARS.Services
                 _logger.LogError(ex, "Error occurred while deleting teacher with ID {TeacherId}", teacherId);
                 throw;
             }
-
-
         }
+
+
 
     }
 }

@@ -13,4 +13,5 @@ namespace DLARS.Models.TeacherModels
         [Required]
         public required string TeacherName { get; set; }
     }
+
 }

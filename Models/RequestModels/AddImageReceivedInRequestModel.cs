@@ -21,4 +21,5 @@ namespace DLARS.Models.Requests
 
         public bool Submitted { get; set; } = true;
     }
+
 }

@@ -7,6 +7,6 @@ namespace DLARS.Models.UserAccountModels
         [Required]
         [EmailAddress]
         public required string Username { get; set; }
-
     }
+
 }

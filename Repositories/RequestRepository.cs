@@ -1,7 +1,7 @@
 ﻿using DLARS.Data;
 using DLARS.Entities;
 using DLARS.Enums;
-using DLARS.Models.Requests;
+using DLARS.Helpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace DLARS.Repositories
@@ -12,6 +12,7 @@ namespace DLARS.Repositories
         IQueryable<RequestEntity> GetRequestByStatusId(RequestStatus statusId, string? filter);
         Task<bool> SubjectExistsInRequestAsync(string studentNumber, string subjectCode);
         Task<bool> GetSubmittedStatusByidAsync(int requestId);
+        Task<int> GetPendingRequestsOlderThanAsync(RequestStatus status, TimeSpan duration);
     }
 
 
@@ -57,6 +58,18 @@ namespace DLARS.Repositories
 
             return isSubmitted;
         }
+
+
+        public async Task<int> GetPendingRequestsOlderThanAsync(RequestStatus status, TimeSpan duration)
+        {
+            var threshold = TimeHelper.GetPhilippineTimeNow().Subtract(duration);
+
+            return await _dbContext.Request
+                .Where(r => r.StatusId == status && r.ModifiedOn <= threshold)
+                .CountAsync();
+        }
+
+
 
     }
 }

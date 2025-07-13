@@ -13,4 +13,5 @@ namespace DLARS.Models.UserAccountModels
         [Required]
         public required string NewPassword { get; set; }
     }
+
 }

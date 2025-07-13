@@ -1,14 +1,16 @@
-﻿using DLARS.Enums;
+﻿using DLARS.Constants;
+using DLARS.Enums;
 using DLARS.Helpers;
 using DLARS.Models.TeacherModels;
 using DLARS.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DLARS.Controllers
 {
     [Route("api/[controller]")]
-    //[Authorize(Roles = "chairperson,Director")]
     [ApiController]
+    [Authorize(Roles = UserRoleConstant.ChairpersonAndDirector)]
     public class TeacherController : ControllerBase
     {
 
@@ -19,7 +21,14 @@ namespace DLARS.Controllers
             _teacherService = teacherService;
         }
 
-        
+
+        /// <summary>
+        /// Adds a new teacher to the system.
+        /// </summary>
+        /// <remarks>
+        /// Only Chairperson and Director roles are allowed to add new teachers.
+        /// Checks for duplicates before saving.
+        /// </remarks>
         [HttpPost]
         public async Task<IActionResult> AddNewTeacher([FromBody] TeacherCreateModel teacher)
         {
@@ -39,6 +48,12 @@ namespace DLARS.Controllers
         }
 
 
+        /// <summary>
+        /// Retrieves all registered teachers.
+        /// </summary>
+        /// <remarks>
+        ///  Returns a list of all teachers together with their code.
+        /// </remarks>
         [HttpGet]
         public async Task<ActionResult<List<TeacherReadModel>>> GetAllTeachers()
         {
@@ -47,6 +62,12 @@ namespace DLARS.Controllers
         }
 
 
+        /// <summary>
+        /// Updates an existing teacher's information.
+        /// </summary>
+        /// <remarks>
+        /// Only accessible to Chairperson and Director. Fails if the teacher does not exist.
+        /// </remarks>
         [HttpPut]
         public async Task<IActionResult> UpdateTeacher([FromBody] TeacherUpdateModel updateTeacher) 
         {
@@ -67,6 +88,12 @@ namespace DLARS.Controllers
         }
 
 
+        /// <summary>
+        /// Deletes a teacher by ID.
+        /// </summary>
+        /// <remarks>
+        /// Validates the teacher ID before deletion.
+        /// </remarks>
         [HttpDelete("{teacherId}")]
         public async Task<IActionResult> DeleteTeacher([FromRoute] int teacherId)
         {

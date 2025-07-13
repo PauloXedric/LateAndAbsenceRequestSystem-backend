@@ -10,4 +10,5 @@ namespace DLARS.Models.TeacherSubjectModels
         [Required]
         public int SubjectId { get; set; }
     }
+
 }

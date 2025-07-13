@@ -12,6 +12,6 @@
         RejectedInDirectorApproval = 8,
         ApprovalComplete = 9,
         WaitingForStudentSupportingDocuments = 10
-
     }
+
 }

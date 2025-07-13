@@ -1,10 +1,8 @@
 ﻿using DLARS.Entities;
-using DLARS.Models;
 using DLARS.Models.Identity;
 using DLARS.Views;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
 
 namespace DLARS.Data
 {
@@ -19,7 +17,6 @@ namespace DLARS.Data
         public DbSet<TeacherSubjectEntity> TeacherSubject { get; set; }
         
 
-
         public DbSet<TeacherAssignedSubjectsModelView> TeacherAssignedSubjects { get; set; }
         public DbSet<RequestResultHistoryModelView> RequestResultHistory { get; set; }
 
@@ -27,7 +24,6 @@ namespace DLARS.Data
         {
 
         }
-
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -45,8 +41,9 @@ namespace DLARS.Data
             modelBuilder.Entity<RequestResultHistoryModelView>()
                .HasNoKey()
                .ToView("RequestResultHistory");
-
         }
+
+
 
     }
 }

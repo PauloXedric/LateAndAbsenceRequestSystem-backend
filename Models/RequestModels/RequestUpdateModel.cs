@@ -11,4 +11,5 @@ namespace DLARS.Models.Requests
         [Required]
         public RequestStatus StatusId { get; set; }
     }
+
 }

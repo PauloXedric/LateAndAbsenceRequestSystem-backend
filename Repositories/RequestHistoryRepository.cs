@@ -1,11 +1,10 @@
 ﻿using DLARS.Data;
 using DLARS.Entities;
-using DLARS.Enums;
 using DLARS.Views;
-using Microsoft.EntityFrameworkCore;
 
 namespace DLARS.Repositories
 {
+
     public interface IRequestHistoryRepository : IBaseRepository<RequestHistoryEntity> 
     {
         IQueryable<RequestResultHistoryModelView> GetViewAsync(string? dateFilter, string? studentNumberFilter);
@@ -15,6 +14,7 @@ namespace DLARS.Repositories
     public class RequestHistoryRepository : BaseRepository<RequestHistoryEntity>, IRequestHistoryRepository
     {
         private readonly AppDbContext _dbContext;
+
         public RequestHistoryRepository(AppDbContext dbContext) : base(dbContext)
         {
             _dbContext = dbContext;
@@ -39,6 +39,7 @@ namespace DLARS.Repositories
 
             return query.OrderByDescending(r => r.ActionDate);
         }
+
 
       
     }

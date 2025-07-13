@@ -1,22 +1,22 @@
 ﻿using AutoMapper;
 using DLARS.Entities;
-using DLARS.Enums;
 using DLARS.Helpers;
 using DLARS.Models.Pagination;
 using DLARS.Models.RequestHistory;
-using DLARS.Models.Requests;
 using DLARS.Repositories;
 using DLARS.Views;
 using Microsoft.EntityFrameworkCore;
 
 namespace DLARS.Services
 {
+
     public interface IRequestHistoryService
     {
         Task<bool> AddRequestHistoryAsync(RequestHistoryCreateModel history);
         Task<PagedResult<RequestResultHistoryModelView>> GetAllListAsync(PaginationParams pagination,
                                                      string? dateFilter, string? studentNumberFilter);
     }
+
 
     public class RequestHistoryService : IRequestHistoryService
     {
@@ -54,8 +54,7 @@ namespace DLARS.Services
             {
                 _logger.LogError(ex, "Error occured while adding history for request with ID {RequestId}", history.RequestId);
                 throw;
-            }
-               
+            }           
         }
 
 
@@ -83,7 +82,6 @@ namespace DLARS.Services
         }
 
        
-
 
     }
 }

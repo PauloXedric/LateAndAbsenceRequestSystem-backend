@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DLARS.Repositories
 {
+
     public interface IBaseRepository<T> where T : class
     {
         Task<T?> GetByIdAsync(int id);
@@ -16,7 +17,6 @@ namespace DLARS.Repositories
     {
         private readonly AppDbContext _dbContext;
         private readonly DbSet<T> _dbSet;
-
 
         public BaseRepository(AppDbContext dbContext) 
         {
@@ -59,5 +59,7 @@ namespace DLARS.Repositories
             _dbSet.Remove(entity);
             return await _dbContext.SaveChangesAsync() > 0;
         }
+
+
     }
 }

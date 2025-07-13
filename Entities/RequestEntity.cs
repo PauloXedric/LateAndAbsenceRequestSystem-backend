@@ -1,9 +1,10 @@
-﻿using DLARS.Enums;
+﻿using DLARS.Abstractions;
+using DLARS.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace DLARS.Entities
 {
-    public class RequestEntity
+    public class RequestEntity : IAuditable
     {
         [Key]
         public int RequestId { get; set; }
@@ -26,8 +27,8 @@ namespace DLARS.Entities
         public DateTime? ChairpersonApprovalDate { get; set; }
         public DateTime? DirectorApprovalDate { get; set; }
         public string? MedicalCertificate { get; set; }
-
         public bool Submitted { get; set; }
+
      
         public RequestEntity()
         {
@@ -38,5 +39,6 @@ namespace DLARS.Entities
         {
             StatusId = newStatus;
         }
+
     } 
 }

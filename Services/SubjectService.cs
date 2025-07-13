@@ -4,7 +4,6 @@ using DLARS.Enums;
 using DLARS.Models.SubjectModel;
 using DLARS.Models.SubjectModels;
 using DLARS.Repositories;
-using System.Threading.Tasks;
 
 namespace DLARS.Services
 {
@@ -20,7 +19,6 @@ namespace DLARS.Services
 
     public class SubjectService : ISubjectService
     {
-
         private readonly IMapper _mapper;
         private readonly ISubjectRepository _subjectRepository;
         private readonly ITeacherSubjectsRepository _teacherSubjectsRepository;
@@ -54,7 +52,6 @@ namespace DLARS.Services
                 var result = await _subjectRepository.AddAsync(subjectEntity);
 
                 return result > 0 ? Result.Success : Result.Failed;
-
             }
             catch (Exception ex)
             {
@@ -125,6 +122,8 @@ namespace DLARS.Services
                 throw;
             }
         }
+         
+
 
     }
 }

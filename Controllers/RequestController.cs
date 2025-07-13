@@ -1,14 +1,17 @@
-﻿using DLARS.Enums;
+﻿using DLARS.Constants;
+using DLARS.Enums;
 using DLARS.Helpers;
 using DLARS.Models.Pagination;
 using DLARS.Models.Requests;
 using DLARS.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DLARS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = UserRoleConstant.AllAdminRoles)]
     public class RequestController : ControllerBase
     {
 
@@ -20,7 +23,13 @@ namespace DLARS.Controllers
         }
 
 
-
+        /// <summary>
+        /// Submits a new request to the system.
+        /// </summary>
+        /// <remarks>
+        /// This endpoint is accessible to unauthenticated users. Used by students or external users to submit requests for processing.
+        /// </remarks>
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> AddNewRequest([FromBody] RequestCreateModel request)
         {
@@ -42,7 +51,13 @@ namespace DLARS.Controllers
         }
 
 
-        //[Authorize(Roles = "Secretary,chairperson,Director")]
+        /// <summary>
+        /// Retrieves all requests filtered by status.
+        /// </summary>
+        /// <remarks>
+        /// This endpoint is restricted to authorized admin roles. Use query parameters to filter by status,
+        /// paginate results, and apply optional search filtering.
+        /// </remarks>
         [HttpGet("all")]
         public async Task<ActionResult<PagedResult<RequestReadModel>>> GetAllRequests([FromQuery] RequestStatus? statusId, [FromQuery] PaginationParams pagination, [FromQuery] string? filter)
         {
@@ -56,6 +71,12 @@ namespace DLARS.Controllers
         }
 
 
+        /// <summary>
+        /// Checks if the request ID has already submitted image proof for a specific request.
+        /// </summary>
+        /// <remarks>
+        /// Used by the jwt token to determine whether to show the upload form or an invalid message
+        /// </remarks>
         [HttpGet("{requestId}")]
         public async Task<ActionResult<bool>> GetSubmittedStatus([FromRoute] int requestId)
         {
@@ -69,6 +90,14 @@ namespace DLARS.Controllers
         }
 
 
+        /// <summary>
+        /// Updates the approval status of a request.
+        /// </summary>
+        /// <remarks>
+        /// Part of the core request workflow. It advances the request to the next
+        /// approval stage (Secretary → Chairperson → Director), allowing the system to track
+        /// where in the process the request currently is.
+        /// </remarks>
         [HttpPatch("update-status")]
         public async Task<IActionResult> UpdateRequestStatus([FromBody] RequestUpdateModel requestUpdate)
         {
@@ -83,6 +112,14 @@ namespace DLARS.Controllers
         }
 
 
+        /// <summary>
+        /// Uploads image proof to an existing request.
+        /// </summary>
+        /// <remarks>
+        /// Accessible to the specific user who was approved during the initial request. It allows students to 
+        /// attach supporting image files after receiving a secure upload link.
+        /// </remarks>
+        [AllowAnonymous]
         [HttpPatch("add-image-proof")]
         public async Task<IActionResult> AddImageProofInRequest([FromForm] AddImageReceivedInRequestModel imageRequest)
         {

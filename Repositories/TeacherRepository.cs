@@ -14,7 +14,6 @@ namespace DLARS.Repositories
     }
 
 
-
     public class TeacherRepository : BaseRepository<TeacherEntity> , ITeacherRepository
     {
         private readonly AppDbContext _dbContext;
@@ -42,6 +41,7 @@ namespace DLARS.Repositories
                 .OrderBy(t => t.TeacherName)
                 .ToListAsync();
         }
+
 
 
     }
