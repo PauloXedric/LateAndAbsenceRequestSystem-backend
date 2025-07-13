@@ -11,7 +11,7 @@ namespace DLARS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = UserRoleConstant.ChairpersonAndDirector)]
+    [Authorize(Roles = UserRoleConstant.AllAdminRoles)]
     public class RequestHistoryController : ControllerBase
     {
         private readonly IRequestHistoryService _requestHistoryService;

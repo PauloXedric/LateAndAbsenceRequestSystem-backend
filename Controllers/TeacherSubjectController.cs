@@ -54,6 +54,7 @@ namespace DLARS.Controllers
         /// <summary>
         /// Retrieves a list of all teacher with their assigned subjects.
         /// </summary>
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<List<TeacherAssignedSubjectsModelView>>> GetAllTeacherAssignedSubjects()
         {
