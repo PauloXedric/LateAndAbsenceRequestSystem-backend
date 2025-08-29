@@ -14,8 +14,8 @@ using DLARS.Middlewares;
 using OpenApiSecurityScheme = Microsoft.OpenApi.Models.OpenApiSecurityScheme;
 using System.Text.Json.Serialization;
 using DLARS.Hubs;
-using DLARS.HangfireJobs;
-using Hangfire;
+using Quartz;
+using DLARS.QuartzJobs;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,10 +24,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
 {
-
     containerBuilder.RegisterModule(new ServiceModule());
     containerBuilder.RegisterModule(new RepositoryModule());
-    containerBuilder.RegisterModule(new HangfireJobModule());
 });
 
 
@@ -89,6 +87,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAngularApp", policy =>
     {
         policy.WithOrigins("http://localhost:4200")
+              .SetIsOriginAllowed(origin => origin.StartsWith("http://192.168."))
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
@@ -103,13 +102,6 @@ builder.Services.AddControllers().AddJsonOptions(opt => {
 
 
 builder.Services.AddSignalR();
-
-
-builder.Services.AddHangfire(config =>
-{
-    config.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnectionString"));
-});
-builder.Services.AddHangfireServer();
 
 
 builder.Services.AddEndpointsApiExplorer();
@@ -146,6 +138,22 @@ builder.Services.AddSwaggerGen(options =>
     options.IncludeXmlComments(xmlPath);
 });
 
+builder.Services.AddQuartz(q =>
+{
+    q.UseInMemoryStore(); 
+
+    var jobKey = new JobKey("NotifyPendingRequestsJob");
+    q.AddJob<NotificationJob>(opts => opts.WithIdentity(jobKey));
+
+    q.AddTrigger(opts => opts
+        .ForJob(jobKey)
+        .WithIdentity("NotifyPendingRequestsTrigger")
+        .WithSimpleSchedule(x => x.WithIntervalInHours(8).RepeatForever())
+    );
+});
+
+builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+
 
 var app = builder.Build();
 
@@ -172,18 +180,6 @@ app.UseCors("AllowAngularApp");
 
 app.UseAuthentication();
 app.UseAuthorization();
-using (var scope = app.Services.CreateScope())
-{
-    var recurringJobManager = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
-    var notificationJob = scope.ServiceProvider.GetRequiredService<INotificationJob>();
-
-    recurringJobManager.AddOrUpdate<INotificationJob>(
-        "NotifyPendingRequests",
-        job => job.NotifyPendingRequestsAsync(),
-       "0 */8 * * *"
-    );
-}
-
 
 if (app.Environment.IsDevelopment())
 {

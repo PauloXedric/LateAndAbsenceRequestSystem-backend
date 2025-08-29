@@ -5,17 +5,12 @@ using DLARS.Hubs;
 using DLARS.Repositories;
 using DLARS.Services;
 using Microsoft.AspNetCore.SignalR;
+using Quartz;
 using System.Globalization;
 
-namespace DLARS.HangfireJobs
+namespace DLARS.QuartzJobs
 {
-    public interface INotificationJob
-    {
-        Task NotifyPendingRequestsAsync();
-    }
-
-
-    public class NotificationJob : INotificationJob
+    public class NotificationJob : IJob
     {
         private readonly IRequestRepository _requestRepository;
         private readonly IUserAccountRepository _userAccountRepository;
@@ -37,7 +32,7 @@ namespace DLARS.HangfireJobs
             _logger = logger;
         }
 
-        public async Task NotifyPendingRequestsAsync()
+        public async Task Execute(IJobExecutionContext context)
         {
             var statusesToCheck = new[]
             {
@@ -55,7 +50,6 @@ namespace DLARS.HangfireJobs
             foreach (var status in statusesToCheck)
             {
                 var count = await _requestRepository.GetPendingRequestsOlderThanAsync(status, TimeSpan.FromHours(8));
-
                 _logger.LogInformation("Status: {Status}, Count: {Count}", status, count);
 
                 var role = status switch
@@ -77,8 +71,7 @@ namespace DLARS.HangfireJobs
                 };
 
                 var group = $"status-{Enum.GetName(typeof(RequestStatus), status)}";
-
-                // SignalR
+             
                 await _hubContext.Clients.Group(group).SendAsync(SignalREvents.ReceivePendingRequestCount, new { status = status.ToString(), count });
                 await _hubContext.Clients.Group(group).SendAsync(SignalREvents.HangfireTriggered);
 
